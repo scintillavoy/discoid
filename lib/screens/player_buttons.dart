@@ -75,18 +75,11 @@ class PlayerButtons extends StatelessWidget {
         iconSize: 64.0,
         onPressed: _audioPlayer.play,
       );
-    } else if (playerState?.processingState != ProcessingState.completed) {
+    } else {
       return IconButton(
         icon: const Icon(Icons.pause),
         iconSize: 64.0,
         onPressed: _audioPlayer.pause,
-      );
-    } else {
-      return IconButton(
-        icon: const Icon(Icons.play_arrow),
-        iconSize: 64.0,
-        onPressed: () => _audioPlayer.seek(Duration.zero,
-            index: _audioPlayer.effectiveIndices?.first),
       );
     }
   }

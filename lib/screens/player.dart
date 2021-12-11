@@ -18,6 +18,14 @@ class _PlayerState extends State<Player> {
   @override
   void initState() {
     super.initState();
+
+    _audioPlayer.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed) {
+        _audioPlayer.pause();
+        _audioPlayer.seek(Duration.zero,
+            index: _audioPlayer.effectiveIndices?.first);
+      }
+    });
   }
 
   Stream<PositionData> get _positionDataStream =>
