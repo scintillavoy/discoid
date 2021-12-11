@@ -1,6 +1,7 @@
 import 'package:audio_video_progress_bar/audio_video_progress_bar.dart';
 import 'package:discoid/models/position_data.dart';
 import 'package:discoid/screens/player_buttons.dart';
+import 'package:discoid/screens/playlist.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:rxdart/rxdart.dart';
@@ -46,24 +47,27 @@ class _PlayerState extends State<Player> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          PlayerButtons(_audioPlayer),
-          StreamBuilder<PositionData>(
-              stream: _positionDataStream,
-              builder: (context, snapshot) {
-                final positionData = snapshot.data;
-                return Container(
-                    margin: const EdgeInsets.all(10.0),
-                    child: ProgressBar(
-                        progress: positionData?.position ?? Duration.zero,
-                        total: positionData?.duration ?? Duration.zero,
-                        buffered:
-                            positionData?.bufferedPosition ?? Duration.zero,
-                        onSeek: (duration) {
-                          _audioPlayer.seek(duration);
-                        }));
-              })
-        ]),
+        child: SafeArea(
+          child: Column(children: [
+            Expanded(child: Playlist(_audioPlayer)),
+            PlayerButtons(_audioPlayer),
+            StreamBuilder<PositionData>(
+                stream: _positionDataStream,
+                builder: (context, snapshot) {
+                  final positionData = snapshot.data;
+                  return Container(
+                      margin: const EdgeInsets.all(10.0),
+                      child: ProgressBar(
+                          progress: positionData?.position ?? Duration.zero,
+                          total: positionData?.duration ?? Duration.zero,
+                          buffered:
+                              positionData?.bufferedPosition ?? Duration.zero,
+                          onSeek: (duration) {
+                            _audioPlayer.seek(duration);
+                          }));
+                })
+          ]),
+        ),
       ),
     );
   }
