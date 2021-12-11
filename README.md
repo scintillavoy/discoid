@@ -1,6 +1,6 @@
 # discoid
 
-A new Flutter project.
+Automatic music player
 
 ## Getting Started
 
