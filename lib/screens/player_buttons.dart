@@ -1,52 +1,58 @@
+import 'package:discoid/services/audio_player_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:provider/provider.dart';
 
 class PlayerButtons extends StatelessWidget {
-  const PlayerButtons(this._audioPlayer, {Key? key}) : super(key: key);
-
-  final AudioPlayer _audioPlayer;
+  const PlayerButtons({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        StreamBuilder<bool>(
-          stream: _audioPlayer.shuffleModeEnabledStream,
-          builder: (context, snapshot) {
-            return _shuffleButton(context, snapshot.data ?? false);
-          },
-        ),
-        StreamBuilder<SequenceState?>(
-          stream: _audioPlayer.sequenceStateStream,
-          builder: (_, __) {
-            return _previousButton();
-          },
-        ),
-        StreamBuilder<PlayerState>(
-          stream: _audioPlayer.playerStateStream,
-          builder: (_, snapshot) {
-            final playerState = snapshot.data;
-            return _playPauseButton(playerState);
-          },
-        ),
-        StreamBuilder<SequenceState?>(
-          stream: _audioPlayer.sequenceStateStream,
-          builder: (_, __) {
-            return _nextButton();
-          },
-        ),
-        StreamBuilder<LoopMode>(
-          stream: _audioPlayer.loopModeStream,
-          builder: (context, snapshot) {
-            return _repeatButton(context, snapshot.data ?? LoopMode.off);
-          },
-        ),
-      ],
-    );
+    return Consumer<AudioPlayerService>(builder: (_, audioPlayerService, __) {
+      final AudioPlayer audioPlayer = audioPlayerService.audioPlayer;
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          StreamBuilder<bool>(
+            stream: audioPlayer.shuffleModeEnabledStream,
+            builder: (context, snapshot) {
+              return _shuffleButton(
+                  context, snapshot.data ?? false, audioPlayer);
+            },
+          ),
+          StreamBuilder<SequenceState?>(
+            stream: audioPlayer.sequenceStateStream,
+            builder: (_, __) {
+              return _previousButton(audioPlayer);
+            },
+          ),
+          StreamBuilder<PlayerState>(
+            stream: audioPlayer.playerStateStream,
+            builder: (_, snapshot) {
+              final playerState = snapshot.data;
+              return _playPauseButton(playerState, audioPlayer);
+            },
+          ),
+          StreamBuilder<SequenceState?>(
+            stream: audioPlayer.sequenceStateStream,
+            builder: (_, __) {
+              return _nextButton(audioPlayer);
+            },
+          ),
+          StreamBuilder<LoopMode>(
+            stream: audioPlayer.loopModeStream,
+            builder: (context, snapshot) {
+              return _repeatButton(
+                  context, snapshot.data ?? LoopMode.off, audioPlayer);
+            },
+          ),
+        ],
+      );
+    });
   }
 
-  Widget _shuffleButton(BuildContext context, bool isEnabled) {
+  Widget _shuffleButton(
+      BuildContext context, bool isEnabled, AudioPlayer audioPlayer) {
     return IconButton(
       icon: isEnabled
           ? Icon(Icons.shuffle, color: Theme.of(context).colorScheme.secondary)
@@ -54,44 +60,45 @@ class PlayerButtons extends StatelessWidget {
       onPressed: () async {
         final enable = !isEnabled;
         if (enable) {
-          await _audioPlayer.shuffle();
+          await audioPlayer.shuffle();
         }
-        await _audioPlayer.setShuffleModeEnabled(enable);
+        await audioPlayer.setShuffleModeEnabled(enable);
       },
     );
   }
 
-  Widget _previousButton() {
+  Widget _previousButton(AudioPlayer audioPlayer) {
     return IconButton(
       icon: const Icon(Icons.skip_previous),
-      onPressed: _audioPlayer.hasPrevious ? _audioPlayer.seekToPrevious : null,
+      onPressed: audioPlayer.hasPrevious ? audioPlayer.seekToPrevious : null,
     );
   }
 
-  Widget _playPauseButton(PlayerState? playerState) {
+  Widget _playPauseButton(PlayerState? playerState, AudioPlayer audioPlayer) {
     if (playerState?.playing != true) {
       return IconButton(
         icon: const Icon(Icons.play_arrow),
         iconSize: 64.0,
-        onPressed: _audioPlayer.play,
+        onPressed: audioPlayer.play,
       );
     } else {
       return IconButton(
         icon: const Icon(Icons.pause),
         iconSize: 64.0,
-        onPressed: _audioPlayer.pause,
+        onPressed: audioPlayer.pause,
       );
     }
   }
 
-  Widget _nextButton() {
+  Widget _nextButton(AudioPlayer audioPlayer) {
     return IconButton(
       icon: const Icon(Icons.skip_next),
-      onPressed: _audioPlayer.hasNext ? _audioPlayer.seekToNext : null,
+      onPressed: audioPlayer.hasNext ? audioPlayer.seekToNext : null,
     );
   }
 
-  Widget _repeatButton(BuildContext context, LoopMode loopMode) {
+  Widget _repeatButton(
+      BuildContext context, LoopMode loopMode, AudioPlayer audioPlayer) {
     final icons = [
       const Icon(Icons.repeat),
       Icon(Icons.repeat, color: Theme.of(context).colorScheme.secondary),
@@ -106,7 +113,7 @@ class PlayerButtons extends StatelessWidget {
     return IconButton(
       icon: icons[index],
       onPressed: () {
-        _audioPlayer.setLoopMode(
+        audioPlayer.setLoopMode(
             loopModes[(loopModes.indexOf(loopMode) + 1) % loopModes.length]);
       },
     );

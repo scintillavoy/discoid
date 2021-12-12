@@ -1,36 +1,34 @@
+import 'package:discoid/models/playlist.dart';
+import 'package:discoid/services/audio_player_service.dart';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:provider/provider.dart';
 
 class PlaylistView extends StatelessWidget {
-  const PlaylistView(this._audioPlayer, {Key? key}) : super(key: key);
+  final Playlist _playlist;
 
-  final AudioPlayer _audioPlayer;
+  const PlaylistView(this._playlist, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<SequenceState?>(
-      stream: _audioPlayer.sequenceStateStream,
-      builder: (context, snapshot) {
-        final state = snapshot.data;
-        if (state == null) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        final sequence = state.sequence;
-        return ListView(
-          children: [
-            for (var i = 0; i < sequence.length; i++)
-              ListTile(
-                selected: i == state.currentIndex,
-                title: Text(sequence[i].tag.title),
-                subtitle: Text(
-                    sequence[i].tag.artist + ' - ' + sequence[i].tag.album),
-                onTap: () {
-                  _audioPlayer.seek(Duration.zero, index: i);
-                },
-              ),
-          ],
-        );
-      },
+    return ListView(
+      children: [
+        for (int i = 0; i < _playlist.items.length; i++)
+          ListTile(
+            // selected: i == state.currentIndex,
+            title: Text(_playlist.items[i].title),
+            subtitle: Text(
+                _playlist.items[i].artist + ' - ' + _playlist.items[i].album),
+            onTap: () {
+              final audioPlayerService =
+                  Provider.of<AudioPlayerService>(context, listen: false);
+              audioPlayerService
+                  .loadPlaylist(_playlist)
+                  .then((_) => audioPlayerService.audioPlayer
+                      .seek(Duration.zero, index: i))
+                  .then((_) => audioPlayerService.audioPlayer.play());
+            },
+          ),
+      ],
     );
   }
 }
