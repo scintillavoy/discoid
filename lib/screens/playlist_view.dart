@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
-class Playlist extends StatelessWidget {
-  const Playlist(this._audioPlayer, {Key? key}) : super(key: key);
+class PlaylistView extends StatelessWidget {
+  const PlaylistView(this._audioPlayer, {Key? key}) : super(key: key);
 
   final AudioPlayer _audioPlayer;
 

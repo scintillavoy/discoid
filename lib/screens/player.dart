@@ -1,6 +1,6 @@
 import 'package:discoid/models/position_data.dart';
 import 'package:discoid/screens/player_buttons.dart';
-import 'package:discoid/screens/playlist.dart';
+import 'package:discoid/screens/playlist_view.dart';
 import 'package:discoid/screens/progress_bar_container.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
@@ -49,7 +49,7 @@ class _PlayerState extends State<Player> {
       body: Center(
         child: SafeArea(
           child: Column(children: [
-            Expanded(child: Playlist(_audioPlayer)),
+            Expanded(child: PlaylistView(_audioPlayer)),
             PlayerButtons(_audioPlayer),
             StreamBuilder<PositionData>(
                 stream: _positionDataStream,
