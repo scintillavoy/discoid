@@ -5,6 +5,7 @@ import 'package:rxdart/rxdart.dart';
 
 class AudioPlayerService {
   final AudioPlayer audioPlayer = AudioPlayer();
+  Playlist? currentPlaylist;
 
   AudioPlayerService() {
     audioPlayer.playerStateStream.listen((state) {
@@ -25,6 +26,10 @@ class AudioPlayerService {
               position, bufferedPosition, duration ?? Duration.zero));
 
   Future<Duration?> loadPlaylist(Playlist playlist) {
+    if (currentPlaylist == playlist) {
+      return Future<Duration?>.value(null);
+    }
+    currentPlaylist = playlist;
     return audioPlayer
         .setAudioSource(ConcatenatingAudioSource(
       children: playlist.items
