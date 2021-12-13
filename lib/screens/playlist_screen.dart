@@ -1,11 +1,8 @@
 import 'package:discoid/models/playlist.dart';
-import 'package:discoid/models/position_data.dart';
 import 'package:discoid/screens/player_buttons.dart';
 import 'package:discoid/screens/playlist_view.dart';
 import 'package:discoid/screens/progress_bar_container.dart';
-import 'package:discoid/services/audio_player_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class PlaylistScreen extends StatelessWidget {
   final Playlist _playlist;
@@ -22,15 +19,9 @@ class PlaylistScreen extends StatelessWidget {
             children: [
               Expanded(child: PlaylistView(_playlist)),
               const PlayerButtons(),
-              Consumer<AudioPlayerService>(
-                builder: (_, audioPlayerService, __) {
-                  return StreamBuilder<PositionData>(
-                    stream: audioPlayerService.positionDataStream,
-                    builder: (_, snapshot) {
-                      return ProgressBarContainer(snapshot.data);
-                    },
-                  );
-                },
+              Container(
+                margin: const EdgeInsets.all(10.0),
+                child: const ProgressBarContainer(),
               ),
             ],
           ),

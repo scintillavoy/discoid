@@ -5,26 +5,25 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProgressBarContainer extends StatelessWidget {
-  final PositionData? _positionData;
-
-  const ProgressBarContainer(this._positionData, {Key? key}) : super(key: key);
+  const ProgressBarContainer({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(10.0),
-      child: Consumer<AudioPlayerService>(
-        builder: (_, audioPlayerService, __) {
+    return Consumer<AudioPlayerService>(builder: (_, audioPlayerService, __) {
+      return StreamBuilder<PositionData>(
+        stream: audioPlayerService.positionDataStream,
+        builder: (_, snapshot) {
+          final positionData = snapshot.data;
           return ProgressBar(
-            progress: _positionData?.position ?? Duration.zero,
-            total: _positionData?.duration ?? Duration.zero,
-            buffered: _positionData?.bufferedPosition ?? Duration.zero,
+            progress: positionData?.position ?? Duration.zero,
+            total: positionData?.duration ?? Duration.zero,
+            buffered: positionData?.bufferedPosition ?? Duration.zero,
             onSeek: (duration) {
               audioPlayerService.audioPlayer.seek(duration);
             },
           );
         },
-      ),
-    );
+      );
+    });
   }
 }
