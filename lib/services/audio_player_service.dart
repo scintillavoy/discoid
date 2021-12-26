@@ -33,9 +33,9 @@ class AudioPlayerService {
     return audioPlayer
         .setAudioSource(ConcatenatingAudioSource(
       children: playlist.items
-          .map((playlistItem) => AudioSource.uri(
-                playlistItem.uri,
-                tag: playlistItem,
+          .map((media) => AudioSource.uri(
+                media.uri,
+                tag: media,
               ))
           .toList(),
     ))

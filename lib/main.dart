@@ -1,5 +1,6 @@
 import 'package:discoid/screens/home.dart';
 import 'package:discoid/services/audio_player_service.dart';
+import 'package:discoid/services/media_library_service.dart';
 import 'package:discoid/services/playlist_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,6 +24,9 @@ class MyApp extends StatelessWidget {
           dispose: (_, audioPlayerService) {
             audioPlayerService.audioPlayer.dispose();
           },
+        ),
+        ChangeNotifierProvider<MediaLibraryService>(
+          create: (_) => MediaLibraryService(),
         ),
       ],
       child: const MaterialApp(

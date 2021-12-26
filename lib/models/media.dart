@@ -1,10 +1,10 @@
-class PlaylistItem {
+class Media {
   final String title;
   final String artist;
   final String album;
   final Uri uri;
 
-  PlaylistItem({
+  Media({
     required this.title,
     required this.artist,
     required this.album,

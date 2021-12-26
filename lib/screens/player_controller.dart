@@ -7,16 +7,17 @@ class PlayerController extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        children: [
-          const Expanded(child: PlayerButtons()),
-          Container(
-            margin: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-            child: const ProgressBarContainer(),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        Container(
+          margin: const EdgeInsets.only(top: 20),
+          child: const PlayerButtons(),
+        ),
+        Container(
+          margin: const EdgeInsets.all(10),
+          child: const ProgressBarContainer(),
+        ),
+      ],
     );
   }
 }
