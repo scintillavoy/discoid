@@ -1,11 +1,35 @@
 import 'package:discoid/models/media.dart';
 import 'package:flutter/material.dart';
+import 'package:sembast/sembast.dart';
+import 'package:sembast/sembast_io.dart';
 
 class MediaLibraryService extends ChangeNotifier {
-  Map<Uri, Media> mediaLibrary = <Uri, Media>{};
+  Map<String, Media> mediaLibrary = <String, Media>{};
+  late Future<Database> database;
+  var store = stringMapStoreFactory.store('media');
 
-  void addMedia(final Media media) {
+  MediaLibraryService() {
+    database = () async {
+      Database db = await databaseFactoryIo.openDatabase('sample.db');
+      return db;
+    }();
+    () async {
+      Database db = await database;
+      await db.transaction((txn) async {
+        var results = await store.find(txn);
+        for (var result in results) {
+          Map<String, dynamic> media = result.value;
+          mediaLibrary[media['uri']] = Media.fromMap(media);
+        }
+      });
+      notifyListeners();
+    }();
+  }
+
+  void addMedia(final Media media) async {
     mediaLibrary[media.uri] = media;
     notifyListeners();
+    Database db = await database;
+    await store.record(media.uri.toString()).put(db, media.toMap());
   }
 }

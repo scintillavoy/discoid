@@ -22,10 +22,9 @@ class ImportButton extends StatelessWidget {
                   title: file.name,
                   artist: "Unknown",
                   album: "Unknown",
-                  uri: Uri.parse("file://${file.path}"),
+                  uri: "file://${file.path}",
                 ));
               }
-              print(mediaLibraryService.mediaLibrary);
             }
           },
         );

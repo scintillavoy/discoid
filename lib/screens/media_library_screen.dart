@@ -11,11 +11,11 @@ class MediaLibraryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<MediaLibraryService>(
       builder: (_, mediaLibraryService, __) {
-        Map<Uri, Media> mediaLibrary = mediaLibraryService.mediaLibrary;
+        Map<String, Media> mediaLibrary = mediaLibraryService.mediaLibrary;
         return ListView.builder(
           itemCount: mediaLibrary.length,
           itemBuilder: (_, index) {
-            Uri key = mediaLibrary.keys.elementAt(index);
+            String key = mediaLibrary.keys.elementAt(index);
             Media value = mediaLibrary[key]!;
             return ListTile(
               title: Text(value.title),
