@@ -15,13 +15,11 @@ class MediaLibraryService extends ChangeNotifier {
     }();
     () async {
       Database db = await database;
-      await db.transaction((txn) async {
-        var results = await store.find(txn);
-        for (var result in results) {
-          Map<String, dynamic> media = result.value;
-          mediaLibrary[media['uri']] = Media.fromMap(media);
-        }
-      });
+      var results = await store.find(db);
+      for (var result in results) {
+        Map<String, dynamic> media = result.value;
+        mediaLibrary[media['uri']] = Media.fromMap(media);
+      }
       notifyListeners();
     }();
   }
