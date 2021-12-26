@@ -28,6 +28,6 @@ class MediaLibraryService extends ChangeNotifier {
     mediaLibrary[media.uri] = media;
     notifyListeners();
     Database db = await database;
-    await store.record(media.uri.toString()).put(db, media.toMap());
+    await store.record(media.uri).put(db, media.toMap());
   }
 }
