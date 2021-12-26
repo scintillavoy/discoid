@@ -24,7 +24,7 @@ class MediaLibraryScreen extends StatelessWidget {
                 final audioPlayerService =
                     Provider.of<AudioPlayerService>(context, listen: false);
                 audioPlayerService.audioPlayer
-                    .setUrl(key.toString())
+                    .setUrl(key)
                     .then((_) => audioPlayerService.audioPlayer.play());
               },
             );

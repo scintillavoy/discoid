@@ -1,4 +1,3 @@
-import 'package:discoid/models/media.dart';
 import 'package:discoid/services/media_library_service.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -18,12 +17,7 @@ class ImportButton extends StatelessWidget {
                 await FilePicker.platform.pickFiles(allowMultiple: true);
             if (result != null) {
               for (var file in result.files) {
-                mediaLibraryService.addMedia(Media(
-                  title: file.name,
-                  artist: "Unknown",
-                  album: "Unknown",
-                  uri: "file://${file.path}",
-                ));
+                mediaLibraryService.addMediaByUri("file://${file.path}");
               }
             }
           },
