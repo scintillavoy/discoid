@@ -1,8 +1,7 @@
 import 'package:discoid/models/playlist.dart';
-import 'package:discoid/screens/player_buttons.dart';
-import 'package:discoid/screens/playlist_view.dart';
-import 'package:discoid/screens/progress_bar_container.dart';
+import 'package:discoid/services/audio_player_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class PlaylistScreen extends StatelessWidget {
   final Playlist _playlist;
@@ -11,22 +10,25 @@ class PlaylistScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: SafeArea(
-          child: Column(
-            children: [
-              Expanded(child: PlaylistView(_playlist)),
-              const PlayerButtons(),
-              Container(
-                margin: const EdgeInsets.all(10.0),
-                child: const ProgressBarContainer(),
-              ),
-            ],
+    return ListView(
+      children: [
+        for (int i = 0; i < _playlist.items.length; i++)
+          ListTile(
+            // selected: i == state.currentIndex,
+            title: Text(_playlist.items[i].title),
+            subtitle: Text(
+                _playlist.items[i].artist + ' - ' + _playlist.items[i].album),
+            onTap: () {
+              final audioPlayerService =
+                  Provider.of<AudioPlayerService>(context, listen: false);
+              audioPlayerService
+                  .loadPlaylist(_playlist)
+                  .then((_) => audioPlayerService.audioPlayer
+                      .seek(Duration.zero, index: i))
+                  .then((_) => audioPlayerService.audioPlayer.play());
+            },
           ),
-        ),
-      ),
+      ],
     );
   }
 }

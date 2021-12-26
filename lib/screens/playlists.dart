@@ -8,28 +8,21 @@ class Playlists extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: Center(
-        child: SafeArea(
-          child: Consumer<PlaylistService>(
-            builder: (_, playlistService, __) {
-              return ListView(
-                children: playlistService.playlists.map((playlist) {
-                  return ListTile(
-                    title: Text(playlist.name),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (_) => PlaylistScreen(playlist),
-                      ));
-                    },
-                  );
-                }).toList(),
-              );
-            },
-          ),
-        ),
-      ),
+    return Consumer<PlaylistService>(
+      builder: (_, playlistService, __) {
+        return ListView(
+          children: playlistService.playlists.map((playlist) {
+            return ListTile(
+              title: Text(playlist.name),
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (_) => PlaylistScreen(playlist),
+                ));
+              },
+            );
+          }).toList(),
+        );
+      },
     );
   }
 }

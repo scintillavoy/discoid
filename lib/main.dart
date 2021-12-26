@@ -1,4 +1,4 @@
-import 'package:discoid/screens/playlists.dart';
+import 'package:discoid/screens/home.dart';
 import 'package:discoid/services/audio_player_service.dart';
 import 'package:discoid/services/playlist_service.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Playlists(),
+        home: Home(),
       ),
     );
   }
