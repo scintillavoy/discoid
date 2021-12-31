@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:discoid/models/media.dart';
 import 'package:discoid/models/playlist.dart';
 import 'package:discoid/models/position_data.dart';
@@ -6,16 +8,23 @@ import 'package:rxdart/rxdart.dart';
 
 class AudioPlayerService {
   final AudioPlayer audioPlayer = AudioPlayer();
+  late StreamSubscription<PlayerState> playbackCompleteSubscription;
   Playlist? currentPlaylist;
 
   AudioPlayerService() {
-    audioPlayer.playerStateStream.listen((state) {
+    playbackCompleteSubscription =
+        audioPlayer.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
         audioPlayer.pause();
         audioPlayer.seek(Duration.zero,
             index: audioPlayer.effectiveIndices?.first);
       }
     });
+  }
+
+  void dispose() {
+    playbackCompleteSubscription.cancel();
+    audioPlayer.dispose();
   }
 
   Stream<PositionData> get positionDataStream =>
@@ -39,17 +48,13 @@ class AudioPlayerService {
       return Future<Duration?>.value(null);
     }
     currentPlaylist = playlist;
-    return audioPlayer
-        .setAudioSource(ConcatenatingAudioSource(
+    return audioPlayer.setAudioSource(ConcatenatingAudioSource(
       children: playlist.items
           .map((media) => AudioSource.uri(
                 Uri.parse(media.uri),
                 tag: media,
               ))
           .toList(),
-    ))
-        .catchError((error) {
-      print("An error occured $error");
-    });
+    ));
   }
 }

@@ -22,11 +22,14 @@ class MyApp extends StatelessWidget {
         Provider<AudioPlayerService>(
           create: (_) => AudioPlayerService(),
           dispose: (_, audioPlayerService) {
-            audioPlayerService.audioPlayer.dispose();
+            audioPlayerService.dispose();
           },
         ),
-        ChangeNotifierProvider<MediaLibraryService>(
+        ChangeNotifierProxyProvider<AudioPlayerService, MediaLibraryService>(
           create: (_) => MediaLibraryService(),
+          update: (_, audioPlayerService, previous) => previous != null
+              ? (previous..update(audioPlayerService))
+              : MediaLibraryService(),
         ),
       ],
       child: const MaterialApp(
