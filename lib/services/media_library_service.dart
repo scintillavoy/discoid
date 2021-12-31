@@ -19,27 +19,29 @@ class MediaLibraryService extends ChangeNotifier {
     () async {
       Database db = await database;
 
-      var files = await fileStore.find(db);
+      var fileMaps = await fileStore.find(db);
 
-      for (var file in files) {
-        ID3Tag tag = ID3TagReader.path(Uri.decodeFull(Uri.parse(file.key).path))
-            .readTagSync();
+      for (var fileMap in fileMaps) {
+        ID3Tag tag =
+            ID3TagReader.path(Uri.decodeFull(Uri.parse(fileMap.key).path))
+                .readTagSync();
 
         Media media = Media(
-          uri: file.key,
-          title: tag.title ?? file.key.split('/').last,
+          uri: fileMap.key,
+          title: tag.title ?? fileMap.key.split('/').last,
           artist: tag.artist,
           album: tag.album,
           track: tag.track,
-          playCount: file.value['playCount'] as int,
-          skipCount: file.value['skipCount'] as int,
-          lastPlayedTimestamp: file.value['lastPlayedTimestamp'] as Timestamp?,
+          playCount: fileMap.value['playCount'] as int,
+          skipCount: fileMap.value['skipCount'] as int,
+          lastPlayedTimestamp:
+              fileMap.value['lastPlayedTimestamp'] as Timestamp?,
           lastSkippedTimestamp:
-              file.value['lastSkippedTimestamp'] as Timestamp?,
+              fileMap.value['lastSkippedTimestamp'] as Timestamp?,
         );
 
         await syncStores(db, media);
-        mediaLibrary[file.key] = media;
+        mediaLibrary[fileMap.key] = media;
       }
       notifyListeners();
     }();
@@ -84,7 +86,7 @@ class MediaLibraryService extends ChangeNotifier {
         media.artist != null &&
         media.album != null &&
         media.track != null) {
-      var result = await mediaStore.findFirst(
+      var mediaMap = await mediaStore.findFirst(
         db,
         finder: Finder(
           filter: Filter.and([
@@ -96,15 +98,15 @@ class MediaLibraryService extends ChangeNotifier {
         ),
       );
 
-      if (result == null) {
+      if (mediaMap == null) {
         await mediaStore.add(db, media.toMediaMap());
       } else {
-        media.playCount = result.value['playCount'] as int;
-        media.skipCount = result.value['skipCount'] as int;
+        media.playCount = mediaMap.value['playCount'] as int;
+        media.skipCount = mediaMap.value['skipCount'] as int;
         media.lastPlayedTimestamp =
-            result.value['lastPlayedTimestamp'] as Timestamp?;
+            mediaMap.value['lastPlayedTimestamp'] as Timestamp?;
         media.lastSkippedTimestamp =
-            result.value['lastSkippedTimestamp'] as Timestamp?;
+            mediaMap.value['lastSkippedTimestamp'] as Timestamp?;
         await fileStore.record(media.uri).update(db, media.toFileMap());
       }
     }
@@ -113,7 +115,7 @@ class MediaLibraryService extends ChangeNotifier {
   Future<void> increaseSkipCount(final Media media) async {
     Database db = await database;
 
-    var result = await mediaStore.findFirst(
+    var mediaMap = await mediaStore.findFirst(
       db,
       finder: Finder(
         filter: Filter.and([
@@ -126,15 +128,15 @@ class MediaLibraryService extends ChangeNotifier {
     );
 
     media.lastSkippedTimestamp = Timestamp.now();
-    if (result == null) {
+    if (mediaMap == null) {
       ++media.skipCount;
     } else {
-      media.playCount = result.value['playCount'] as int;
-      media.skipCount = (result.value['skipCount'] as int) + 1;
+      media.playCount = mediaMap.value['playCount'] as int;
+      media.skipCount = (mediaMap.value['skipCount'] as int) + 1;
       media.lastPlayedTimestamp =
-          result.value['lastPlayedTimestamp'] as Timestamp?;
+          mediaMap.value['lastPlayedTimestamp'] as Timestamp?;
 
-      await mediaStore.record(result.key).update(db, media.toMediaMap());
+      await mediaStore.record(mediaMap.key).update(db, media.toMediaMap());
     }
     await fileStore.record(media.uri).update(db, media.toFileMap());
   }
