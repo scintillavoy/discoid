@@ -1,4 +1,5 @@
 import 'package:discoid/models/media.dart';
+import 'package:discoid/models/playlist.dart';
 import 'package:discoid/services/audio_player_service.dart';
 import 'package:discoid/services/media_library_service.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,14 @@ class MediaLibraryScreen extends StatelessWidget {
               onTap: () {
                 final audioPlayerService =
                     Provider.of<AudioPlayerService>(context, listen: false);
-                audioPlayerService.audioPlayer
-                    .setUrl(key)
+                audioPlayerService
+                    .loadPlaylist(Playlist(
+                      name: 'mediaLibrary',
+                      // TODO: convert to List only when necessary
+                      items: mediaLibrary.values.toList(),
+                    ))
+                    .then((_) => audioPlayerService.audioPlayer
+                        .seek(Duration.zero, index: index))
                     .then((_) => audioPlayerService.audioPlayer.play());
               },
             );

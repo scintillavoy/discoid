@@ -1,3 +1,4 @@
+import 'package:discoid/models/media.dart';
 import 'package:discoid/models/playlist.dart';
 import 'package:discoid/models/position_data.dart';
 import 'package:just_audio/just_audio.dart';
@@ -24,6 +25,14 @@ class AudioPlayerService {
           audioPlayer.durationStream,
           (position, bufferedPosition, duration) => PositionData(
               position, bufferedPosition, duration ?? Duration.zero));
+
+  Media? get currentMedia {
+    if (audioPlayer.currentIndex != null) {
+      return currentPlaylist?.items[audioPlayer.currentIndex!];
+    } else {
+      return null;
+    }
+  }
 
   Future<Duration?> loadPlaylist(Playlist playlist) {
     if (currentPlaylist == playlist) {

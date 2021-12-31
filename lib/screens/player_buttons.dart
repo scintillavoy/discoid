@@ -1,4 +1,5 @@
 import 'package:discoid/services/audio_player_service.dart';
+import 'package:discoid/services/media_library_service.dart';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:provider/provider.dart';
@@ -36,7 +37,7 @@ class PlayerButtons extends StatelessWidget {
           StreamBuilder<SequenceState?>(
             stream: audioPlayer.sequenceStateStream,
             builder: (_, __) {
-              return _nextButton(audioPlayer);
+              return _nextButton(audioPlayerService);
             },
           ),
           StreamBuilder<LoopMode>(
@@ -90,11 +91,22 @@ class PlayerButtons extends StatelessWidget {
     }
   }
 
-  Widget _nextButton(AudioPlayer audioPlayer) {
-    return IconButton(
-      icon: const Icon(Icons.skip_next),
-      onPressed: audioPlayer.hasNext ? audioPlayer.seekToNext : null,
-    );
+  Widget _nextButton(AudioPlayerService audioPlayerService) {
+    final AudioPlayer audioPlayer = audioPlayerService.audioPlayer;
+    return Consumer<MediaLibraryService>(builder: (_, mediaLibraryService, __) {
+      return IconButton(
+        icon: const Icon(Icons.skip_next),
+        onPressed: audioPlayer.hasNext
+            ? () async {
+                if (audioPlayerService.currentMedia != null) {
+                  await mediaLibraryService
+                      .increaseSkipCount(audioPlayerService.currentMedia!);
+                }
+                audioPlayer.seekToNext();
+              }
+            : null,
+      );
+    });
   }
 
   Widget _repeatButton(

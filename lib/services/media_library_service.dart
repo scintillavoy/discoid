@@ -109,4 +109,33 @@ class MediaLibraryService extends ChangeNotifier {
       }
     }
   }
+
+  Future<void> increaseSkipCount(final Media media) async {
+    Database db = await database;
+
+    var result = await mediaStore.findFirst(
+      db,
+      finder: Finder(
+        filter: Filter.and([
+          Filter.equals('title', media.title),
+          Filter.equals('artist', media.artist),
+          Filter.equals('album', media.album),
+          Filter.equals('track', media.track),
+        ]),
+      ),
+    );
+
+    media.lastSkippedTimestamp = Timestamp.now();
+    if (result == null) {
+      ++media.skipCount;
+    } else {
+      media.playCount = result.value['playCount'] as int;
+      media.skipCount = (result.value['skipCount'] as int) + 1;
+      media.lastPlayedTimestamp =
+          result.value['lastPlayedTimestamp'] as Timestamp?;
+
+      await mediaStore.record(result.key).update(db, media.toMediaMap());
+    }
+    await fileStore.record(media.uri).update(db, media.toFileMap());
+  }
 }
