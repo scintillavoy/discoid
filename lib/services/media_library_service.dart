@@ -40,7 +40,7 @@ class MediaLibraryService extends ChangeNotifier {
               fileMap.value['lastSkippedTimestamp'] as Timestamp?,
         );
 
-        await syncStores(db, media);
+        await syncStores(media);
         mediaLibrary[fileMap.key] = media;
       }
       notifyListeners();
@@ -76,12 +76,14 @@ class MediaLibraryService extends ChangeNotifier {
     );
 
     await fileStore.record(uri).add(db, media.toFileMap());
-    await syncStores(db, media);
+    await syncStores(media);
     mediaLibrary[uri] = media;
     notifyListeners();
   }
 
-  Future<void> syncStores(final Database db, final Media media) async {
+  Future<void> syncStores(final Media media) async {
+    Database db = await database;
+
     if (media.title != null &&
         media.artist != null &&
         media.album != null &&
