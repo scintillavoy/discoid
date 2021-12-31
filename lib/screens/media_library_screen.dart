@@ -18,8 +18,9 @@ class MediaLibraryScreen extends StatelessWidget {
             String key = mediaLibrary.keys.elementAt(index);
             Media value = mediaLibrary[key]!;
             return ListTile(
-              title: Text(value.title),
-              subtitle: Text("${value.artist} - ${value.album}"),
+              title: Text(value.title ?? "null"),
+              subtitle: Text(
+                  "${value.artist ?? "null"} - ${value.album ?? "null"} - ${value.playCount} - ${value.skipCount}"),
               onTap: () {
                 final audioPlayerService =
                     Provider.of<AudioPlayerService>(context, listen: false);
