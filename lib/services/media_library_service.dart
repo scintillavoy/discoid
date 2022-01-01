@@ -42,7 +42,7 @@ class MediaLibraryService extends ChangeNotifier {
           title: tag.title ?? fileMap.key.split('/').last,
           artist: tag.artist,
           album: tag.album,
-          track: tag.track,
+          trackNumber: tag.track,
           playCount: fileMap.value['playCount'] as int,
           skipCount: fileMap.value['skipCount'] as int,
           lastPlayedTimestamp:
@@ -113,7 +113,7 @@ class MediaLibraryService extends ChangeNotifier {
       title: tag.title ?? uri.split('/').last,
       artist: tag.artist,
       album: tag.album,
-      track: tag.track,
+      trackNumber: tag.track,
       playCount: 0,
       skipCount: 0,
       lastPlayedTimestamp: null,
@@ -132,7 +132,7 @@ class MediaLibraryService extends ChangeNotifier {
     if (media.title != null &&
         media.artist != null &&
         media.album != null &&
-        media.track != null) {
+        media.trackNumber != null) {
       var mediaMap = await mediaStore.findFirst(
         db,
         finder: Finder(
@@ -140,7 +140,7 @@ class MediaLibraryService extends ChangeNotifier {
             Filter.equals('title', media.title),
             Filter.equals('artist', media.artist),
             Filter.equals('album', media.album),
-            Filter.equals('track', media.track),
+            Filter.equals('trackNumber', media.trackNumber),
           ]),
         ),
       );
@@ -169,7 +169,7 @@ class MediaLibraryService extends ChangeNotifier {
           Filter.equals('title', media.title),
           Filter.equals('artist', media.artist),
           Filter.equals('album', media.album),
-          Filter.equals('track', media.track),
+          Filter.equals('trackNumber', media.trackNumber),
         ]),
       ),
     );
@@ -198,7 +198,7 @@ class MediaLibraryService extends ChangeNotifier {
           Filter.equals('title', media.title),
           Filter.equals('artist', media.artist),
           Filter.equals('album', media.album),
-          Filter.equals('track', media.track),
+          Filter.equals('trackNumber', media.trackNumber),
         ]),
       ),
     );

@@ -6,7 +6,7 @@ class Media {
   final String? title;
   final String? artist;
   final String? album;
-  final String? track;
+  final String? trackNumber;
 
   int playCount;
   int skipCount;
@@ -18,7 +18,7 @@ class Media {
     this.title,
     this.artist,
     this.album,
-    this.track,
+    this.trackNumber,
     required this.playCount,
     required this.skipCount,
     this.lastPlayedTimestamp,
@@ -30,7 +30,7 @@ class Media {
       'title': title,
       'artist': artist,
       'album': album,
-      'track': track,
+      'trackNumber': trackNumber,
       'playCount': playCount,
       'skipCount': skipCount,
       'lastPlayedTimestamp': lastPlayedTimestamp,
@@ -52,7 +52,7 @@ class Media {
         title = map['title'],
         artist = map['artist'],
         album = map['album'],
-        track = map['track'],
+        trackNumber = map['trackNumber'],
         playCount = map['playCount'],
         skipCount = map['skipCount'],
         lastPlayedTimestamp = map['lastPlayedTimestamp'],
