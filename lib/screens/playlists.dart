@@ -4,23 +4,30 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class Playlists extends StatelessWidget {
-  const Playlists({Key? key}) : super(key: key);
+  final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
+
+  Playlists({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Consumer<PlaylistService>(
       builder: (_, playlistService, __) {
-        return ListView(
-          children: playlistService.playlists.map((playlist) {
-            return ListTile(
-              title: Text(playlist.name),
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => PlaylistScreen(playlist),
-                ));
-              },
-            );
-          }).toList(),
+        return Navigator(
+          key: _navigatorKey,
+          onGenerateRoute: (_) => MaterialPageRoute(
+            builder: (_) => ListView(
+              children: playlistService.playlists.map((playlist) {
+                return ListTile(
+                  title: Text(playlist.name),
+                  onTap: () {
+                    _navigatorKey.currentState!.push(MaterialPageRoute(
+                      builder: (_) => PlaylistScreen(playlist),
+                    ));
+                  },
+                );
+              }).toList(),
+            ),
+          ),
         );
       },
     );
