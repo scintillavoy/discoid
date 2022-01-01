@@ -1,6 +1,6 @@
 import 'package:sembast/timestamp.dart';
 
-class Media {
+class Track {
   final String uri;
 
   final String? title;
@@ -13,7 +13,7 @@ class Media {
   Timestamp? lastPlayedTimestamp;
   Timestamp? lastSkippedTimestamp;
 
-  Media({
+  Track({
     required this.uri,
     this.title,
     this.artist,
@@ -25,7 +25,7 @@ class Media {
     this.lastSkippedTimestamp,
   });
 
-  Map<String, dynamic> toMediaMap() {
+  Map<String, dynamic> toTrackMap() {
     return {
       'title': title,
       'artist': artist,
@@ -47,7 +47,7 @@ class Media {
     };
   }
 
-  Media.fromMap(Map<String, dynamic> map)
+  Track.fromMap(Map<String, dynamic> map)
       : uri = map['uri'],
         title = map['title'],
         artist = map['artist'],

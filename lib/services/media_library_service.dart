@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:discoid/models/media.dart';
+import 'package:discoid/models/track.dart';
 import 'package:discoid/services/audio_player_service.dart';
 import 'package:flutter/material.dart';
 import 'package:id3tag/id3tag.dart';
@@ -12,10 +12,10 @@ import 'package:sembast/timestamp.dart';
 
 class MediaLibraryService extends ChangeNotifier {
   StreamSubscription<Duration>? increasePlayCountSubscription;
-  Map<String, Media> mediaLibrary = <String, Media>{};
+  Map<String, Track> allTracks = <String, Track>{};
   late Future<Database> database;
   var fileStore = stringMapStoreFactory.store('file');
-  var mediaStore = intMapStoreFactory.store('media');
+  var trackStore = intMapStoreFactory.store('track');
 
   MediaLibraryService() {
     database = () async {
@@ -37,7 +37,7 @@ class MediaLibraryService extends ChangeNotifier {
           continue;
         }
 
-        Media media = Media(
+        Track track = Track(
           uri: fileMap.key,
           title: tag.title ?? fileMap.key.split('/').last,
           artist: tag.artist,
@@ -51,8 +51,8 @@ class MediaLibraryService extends ChangeNotifier {
               fileMap.value['lastSkippedTimestamp'] as Timestamp?,
         );
 
-        await syncStores(media);
-        mediaLibrary[fileMap.key] = media;
+        await syncStores(track);
+        allTracks[fileMap.key] = track;
       }
       notifyListeners();
     }();
@@ -73,29 +73,29 @@ class MediaLibraryService extends ChangeNotifier {
       if (audioPlayer.duration != null &&
           position > audioPlayer.duration! ~/ 5 &&
           audioPlayer.playing &&
-          audioPlayerService.currentMedia != null &&
-          (audioPlayerService.currentMedia!.lastPlayedTimestamp?.compareTo(
+          audioPlayerService.currentTrack != null &&
+          (audioPlayerService.currentTrack!.lastPlayedTimestamp?.compareTo(
                       Timestamp.fromDateTime(
                           DateTime.now().subtract(audioPlayer.duration!))) ??
                   0) <
               5) {
         print(
-            "$position :: ${audioPlayer.position} :: ${audioPlayer.duration} :: ${audioPlayerService.currentMedia?.lastPlayedTimestamp} :: ${Timestamp.fromDateTime(DateTime.now().subtract(audioPlayer.duration!))}");
-        increasePlayCount(audioPlayerService.currentMedia!);
+            "$position :: ${audioPlayer.position} :: ${audioPlayer.duration} :: ${audioPlayerService.currentTrack?.lastPlayedTimestamp} :: ${Timestamp.fromDateTime(DateTime.now().subtract(audioPlayer.duration!))}");
+        increasePlayCount(audioPlayerService.currentTrack!);
       }
     });
   }
 
-  Future<void> addMediaByUri(final String uri) async {
+  Future<void> addTrackByUri(final String uri) async {
     Database db = await database;
 
     if (await fileStore.record(uri).exists(db)) {
-      print("addMediaByUri: uri already exists in fileStore");
+      print("addTrackByUri: uri already exists in fileStore");
       return;
     }
 
-    if (mediaLibrary.containsKey(uri)) {
-      print("addMediaByUri: uri already exists in mediaLibrary");
+    if (allTracks.containsKey(uri)) {
+      print("addTrackByUri: uri already exists in allTracks");
       return;
     }
 
@@ -104,11 +104,11 @@ class MediaLibraryService extends ChangeNotifier {
       tag =
           ID3TagReader.path(Uri.decodeFull(Uri.parse(uri).path)).readTagSync();
     } on FileSystemException {
-      print("MediaLibraryService.addMediaByUri(): File not found");
+      print("MediaLibraryService.addTrackByUri(): File not found");
       return;
     }
 
-    Media media = Media(
+    Track track = Track(
       uri: uri,
       title: tag.title ?? uri.split('/').last,
       artist: tag.artist,
@@ -120,100 +120,100 @@ class MediaLibraryService extends ChangeNotifier {
       lastSkippedTimestamp: null,
     );
 
-    await fileStore.record(uri).add(db, media.toFileMap());
-    await syncStores(media);
-    mediaLibrary[uri] = media;
+    await fileStore.record(uri).add(db, track.toFileMap());
+    await syncStores(track);
+    allTracks[uri] = track;
     notifyListeners();
   }
 
-  Future<void> syncStores(final Media media) async {
+  Future<void> syncStores(final Track track) async {
     Database db = await database;
 
-    if (media.title != null &&
-        media.artist != null &&
-        media.album != null &&
-        media.trackNumber != null) {
-      var mediaMap = await mediaStore.findFirst(
+    if (track.title != null &&
+        track.artist != null &&
+        track.album != null &&
+        track.trackNumber != null) {
+      var trackMap = await trackStore.findFirst(
         db,
         finder: Finder(
           filter: Filter.and([
-            Filter.equals('title', media.title),
-            Filter.equals('artist', media.artist),
-            Filter.equals('album', media.album),
-            Filter.equals('trackNumber', media.trackNumber),
+            Filter.equals('title', track.title),
+            Filter.equals('artist', track.artist),
+            Filter.equals('album', track.album),
+            Filter.equals('trackNumber', track.trackNumber),
           ]),
         ),
       );
 
-      if (mediaMap == null) {
-        await mediaStore.add(db, media.toMediaMap());
+      if (trackMap == null) {
+        await trackStore.add(db, track.toTrackMap());
       } else {
-        media.playCount = mediaMap.value['playCount'] as int;
-        media.skipCount = mediaMap.value['skipCount'] as int;
-        media.lastPlayedTimestamp =
-            mediaMap.value['lastPlayedTimestamp'] as Timestamp?;
-        media.lastSkippedTimestamp =
-            mediaMap.value['lastSkippedTimestamp'] as Timestamp?;
-        await fileStore.record(media.uri).update(db, media.toFileMap());
+        track.playCount = trackMap.value['playCount'] as int;
+        track.skipCount = trackMap.value['skipCount'] as int;
+        track.lastPlayedTimestamp =
+            trackMap.value['lastPlayedTimestamp'] as Timestamp?;
+        track.lastSkippedTimestamp =
+            trackMap.value['lastSkippedTimestamp'] as Timestamp?;
+        await fileStore.record(track.uri).update(db, track.toFileMap());
       }
     }
   }
 
-  Future<void> increasePlayCount(final Media media) async {
+  Future<void> increasePlayCount(final Track track) async {
     Database db = await database;
 
-    var mediaMap = await mediaStore.findFirst(
+    var trackMap = await trackStore.findFirst(
       db,
       finder: Finder(
         filter: Filter.and([
-          Filter.equals('title', media.title),
-          Filter.equals('artist', media.artist),
-          Filter.equals('album', media.album),
-          Filter.equals('trackNumber', media.trackNumber),
+          Filter.equals('title', track.title),
+          Filter.equals('artist', track.artist),
+          Filter.equals('album', track.album),
+          Filter.equals('trackNumber', track.trackNumber),
         ]),
       ),
     );
 
-    media.lastPlayedTimestamp = Timestamp.now();
-    if (mediaMap == null) {
-      ++media.playCount;
+    track.lastPlayedTimestamp = Timestamp.now();
+    if (trackMap == null) {
+      ++track.playCount;
     } else {
-      media.playCount = (mediaMap.value['playCount'] as int) + 1;
-      media.skipCount = mediaMap.value['skipCount'] as int;
-      media.lastSkippedTimestamp =
-          mediaMap.value['lastSkippedTimestamp'] as Timestamp?;
+      track.playCount = (trackMap.value['playCount'] as int) + 1;
+      track.skipCount = trackMap.value['skipCount'] as int;
+      track.lastSkippedTimestamp =
+          trackMap.value['lastSkippedTimestamp'] as Timestamp?;
 
-      await mediaStore.record(mediaMap.key).update(db, media.toMediaMap());
+      await trackStore.record(trackMap.key).update(db, track.toTrackMap());
     }
-    await fileStore.record(media.uri).update(db, media.toFileMap());
+    await fileStore.record(track.uri).update(db, track.toFileMap());
   }
 
-  Future<void> increaseSkipCount(final Media media) async {
+  Future<void> increaseSkipCount(final Track track) async {
     Database db = await database;
 
-    var mediaMap = await mediaStore.findFirst(
+    var trackMap = await trackStore.findFirst(
       db,
       finder: Finder(
         filter: Filter.and([
-          Filter.equals('title', media.title),
-          Filter.equals('artist', media.artist),
-          Filter.equals('album', media.album),
-          Filter.equals('trackNumber', media.trackNumber),
+          Filter.equals('title', track.title),
+          Filter.equals('artist', track.artist),
+          Filter.equals('album', track.album),
+          Filter.equals('trackNumber', track.trackNumber),
         ]),
       ),
     );
 
-    media.lastSkippedTimestamp = Timestamp.now();
-    if (mediaMap == null) {
-      ++media.skipCount;
+    track.lastSkippedTimestamp = Timestamp.now();
+    if (trackMap == null) {
+      ++track.skipCount;
     } else {
-      media.playCount = mediaMap.value['playCount'] as int;
-      media.skipCount = (mediaMap.value['skipCount'] as int) + 1;
-      media.lastPlayedTimestamp =
-          mediaMap.value['lastPlayedTimestamp'] as Timestamp?;
+      track.playCount = trackMap.value['playCount'] as int;
+      track.skipCount = (trackMap.value['skipCount'] as int) + 1;
+      track.lastPlayedTimestamp =
+          trackMap.value['lastPlayedTimestamp'] as Timestamp?;
 
-      await mediaStore.record(mediaMap.key).update(db, media.toMediaMap());
+      await trackStore.record(trackMap.key).update(db, track.toTrackMap());
     }
-    await fileStore.record(media.uri).update(db, media.toFileMap());
+    await fileStore.record(track.uri).update(db, track.toFileMap());
   }
 }

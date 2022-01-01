@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:discoid/models/media.dart';
+import 'package:discoid/models/track.dart';
 import 'package:discoid/models/playlist.dart';
 import 'package:discoid/models/position_data.dart';
 import 'package:just_audio/just_audio.dart';
@@ -35,7 +35,7 @@ class AudioPlayerService {
           (position, bufferedPosition, duration) => PositionData(
               position, bufferedPosition, duration ?? Duration.zero));
 
-  Media? get currentMedia {
+  Track? get currentTrack {
     if (audioPlayer.currentIndex != null) {
       return currentPlaylist?.items[audioPlayer.currentIndex!];
     } else {
@@ -50,9 +50,9 @@ class AudioPlayerService {
     currentPlaylist = playlist;
     return audioPlayer.setAudioSource(ConcatenatingAudioSource(
       children: playlist.items
-          .map((media) => AudioSource.uri(
-                Uri.parse(media.uri),
-                tag: media,
+          .map((track) => AudioSource.uri(
+                Uri.parse(track.uri),
+                tag: track,
               ))
           .toList(),
     ));

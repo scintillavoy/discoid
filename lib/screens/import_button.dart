@@ -17,7 +17,7 @@ class ImportButton extends StatelessWidget {
                 await FilePicker.platform.pickFiles(allowMultiple: true);
             if (result != null) {
               for (var file in result.files) {
-                mediaLibraryService.addMediaByUri("file://${file.path}");
+                mediaLibraryService.addTrackByUri("file://${file.path}");
               }
             }
           },

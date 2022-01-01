@@ -98,9 +98,9 @@ class PlayerButtons extends StatelessWidget {
         icon: const Icon(Icons.skip_next),
         onPressed: audioPlayer.hasNext
             ? () async {
-                if (audioPlayerService.currentMedia != null) {
+                if (audioPlayerService.currentTrack != null) {
                   await mediaLibraryService
-                      .increaseSkipCount(audioPlayerService.currentMedia!);
+                      .increaseSkipCount(audioPlayerService.currentTrack!);
                 }
                 audioPlayer.seekToNext();
               }

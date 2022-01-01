@@ -1,12 +1,12 @@
 import 'package:discoid/models/playlist.dart';
-import 'package:discoid/models/media.dart';
+import 'package:discoid/models/track.dart';
 
 class PlaylistService {
   List<Playlist> playlists = [
     Playlist(
       name: "Dummy playlist",
       items: [
-        Media(
+        Track(
           uri: "Dummy uri",
           title: "Dummy song",
           artist: "Dummy artist",
@@ -14,7 +14,7 @@ class PlaylistService {
           playCount: 0,
           skipCount: 0,
         ),
-        Media(
+        Track(
           uri: "Dummy uri",
           title: "Dummy song",
           artist: "Dummy artist",
@@ -22,7 +22,7 @@ class PlaylistService {
           playCount: 0,
           skipCount: 0,
         ),
-        Media(
+        Track(
           uri: "Dummy uri",
           title: "Dummy song",
           artist: "Dummy artist",
@@ -34,7 +34,7 @@ class PlaylistService {
     ),
   ];
 
-  List<Media> get allItems {
+  List<Track> get allItems {
     return playlists.expand((playlist) => playlist.items).toList();
   }
 }

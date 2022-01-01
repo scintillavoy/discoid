@@ -1,8 +1,8 @@
-import 'package:discoid/models/media.dart';
+import 'package:discoid/models/track.dart';
 
 class Playlist {
   String name;
-  final List<Media> items;
+  final List<Track> items;
 
-  Playlist({required this.name, List<Media>? items}) : items = items ?? [];
+  Playlist({required this.name, List<Track>? items}) : items = items ?? [];
 }
