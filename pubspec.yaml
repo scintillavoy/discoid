@@ -40,7 +40,9 @@ dependencies:
   provider: ^6.0.1
   file_picker: ^4.3.0
   sembast: ^3.1.1+1
-  id3tag: ^0.1.0
+  id3tag:
+    git:
+      url: git://github.com/scintillavoy/id3tag.git
   flac_metadata:
     git:
       url: git://github.com/scintillavoy/flac_metadata.git

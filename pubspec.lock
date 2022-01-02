@@ -147,9 +147,11 @@ packages:
   id3tag:
     dependency: "direct main"
     description:
-      name: id3tag
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: e7a46c93e10ba6c415dd677852d623645cec5190
+      url: "git://github.com/scintillavoy/id3tag.git"
+    source: git
     version: "0.1.0"
   js:
     dependency: transitive
