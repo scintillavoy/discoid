@@ -41,6 +41,9 @@ dependencies:
   file_picker: ^4.3.0
   sembast: ^3.1.1+1
   id3tag: ^0.1.0
+  flac_metadata:
+    git:
+      url: git://github.com/scintillavoy/flac_metadata.git
 
 dev_dependencies:
   flutter_test:

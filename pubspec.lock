@@ -99,6 +99,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.3.0"
+  flac_metadata:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: HEAD
+      resolved-ref: e0ad0dc4ceefe085db34dc182509fba114b38f1f
+      url: "git://github.com/scintillavoy/flac_metadata.git"
+    source: git
+    version: "1.0.3"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -128,6 +137,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  hex:
+    dependency: transitive
+    description:
+      name: hex
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0"
   id3tag:
     dependency: "direct main"
     description:

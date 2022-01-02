@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:discoid/models/track.dart';
 import 'package:discoid/services/audio_player_service.dart';
+import 'package:flac_metadata/flacstream.dart';
+import 'package:flac_metadata/metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:id3tag/id3tag.dart';
 import 'package:just_audio/just_audio.dart';
@@ -28,21 +30,12 @@ class MediaLibraryService extends ChangeNotifier {
       var fileMaps = await fileStore.find(db);
 
       for (var fileMap in fileMaps) {
-        ID3Tag tag;
-        try {
-          tag = ID3TagReader.path(Uri.decodeFull(Uri.parse(fileMap.key).path))
-              .readTagSync();
-        } on FileSystemException {
-          print("MediaLibraryService(): File not found");
-          continue;
-        }
-
         Track track = Track(
           uri: fileMap.key,
-          title: tag.title ?? fileMap.key.split('/').last,
-          artist: tag.artist,
-          album: tag.album,
-          trackNumber: tag.track,
+          title: fileMap.key.split('/').last,
+          artist: null,
+          album: null,
+          trackNumber: null,
           playCount: fileMap.value['playCount'] as int,
           skipCount: fileMap.value['skipCount'] as int,
           lastPlayedTimestamp:
@@ -50,6 +43,13 @@ class MediaLibraryService extends ChangeNotifier {
           lastSkippedTimestamp:
               fileMap.value['lastSkippedTimestamp'] as Timestamp?,
         );
+
+        try {
+          await readTagFromUri(track, fileMap.key);
+        } on FileSystemException {
+          print("readTagFromUri(): File not found at ${fileMap.key}");
+          continue;
+        }
 
         await syncStores(track);
         allTracks[fileMap.key] = track;
@@ -99,31 +99,61 @@ class MediaLibraryService extends ChangeNotifier {
       return;
     }
 
-    ID3Tag tag;
-    try {
-      tag =
-          ID3TagReader.path(Uri.decodeFull(Uri.parse(uri).path)).readTagSync();
-    } on FileSystemException {
-      print("MediaLibraryService.addTrackByUri(): File not found");
-      return;
-    }
-
     Track track = Track(
       uri: uri,
-      title: tag.title ?? uri.split('/').last,
-      artist: tag.artist,
-      album: tag.album,
-      trackNumber: tag.track,
+      title: uri.split('/').last,
+      artist: null,
+      album: null,
+      trackNumber: null,
       playCount: 0,
       skipCount: 0,
       lastPlayedTimestamp: null,
       lastSkippedTimestamp: null,
     );
 
+    try {
+      await readTagFromUri(track, uri);
+    } on FileSystemException {
+      print("readTagFromUri(): File not found at $uri");
+      return;
+    }
+
     await fileStore.record(uri).add(db, track.toFileMap());
     await syncStores(track);
     allTracks[uri] = track;
     notifyListeners();
+  }
+
+  Future<void> readTagFromUri(final Track track, final String uri) async {
+    if (uri.endsWith('.flac')) {
+      FlacInfo flacInfo = FlacInfo(File(Uri.decodeFull(Uri.parse(uri).path)));
+      List<Metadata> metadatas = await flacInfo.readMetadatas();
+      Map<String, String> flacTag = <String, String>{};
+
+      for (Metadata metadata in metadatas) {
+        if (metadata is VorbisComment) {
+          for (String element in metadata.comments) {
+            flacTag[element.substring(0, element.indexOf('='))] =
+                element.substring(element.indexOf('=') + 1);
+          }
+        }
+      }
+
+      track.title = flacTag['Title'] ?? track.title;
+      track.artist = flacTag['Artist'];
+      track.album = flacTag['Album'];
+      track.trackNumber = flacTag['TRACKNUMBER'];
+    } else {
+      ID3Tag id3Tag;
+
+      id3Tag =
+          ID3TagReader.path(Uri.decodeFull(Uri.parse(uri).path)).readTagSync();
+
+      track.title = id3Tag.title ?? track.title;
+      track.artist = id3Tag.artist;
+      track.album = id3Tag.album;
+      track.trackNumber = id3Tag.track;
+    }
   }
 
   Future<void> syncStores(final Track track) async {

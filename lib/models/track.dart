@@ -3,10 +3,10 @@ import 'package:sembast/timestamp.dart';
 class Track {
   final String uri;
 
-  final String? title;
-  final String? artist;
-  final String? album;
-  final String? trackNumber;
+  String? title;
+  String? artist;
+  String? album;
+  String? trackNumber;
 
   int playCount;
   int skipCount;
