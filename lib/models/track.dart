@@ -57,4 +57,11 @@ class Track {
         skipCount = map['skipCount'],
         lastPlayedTimestamp = map['lastPlayedTimestamp'],
         lastSkippedTimestamp = map['lastSkippedTimestamp'];
+
+  bool isTrackInfoAvailable() {
+    return title != null &&
+        artist != null &&
+        album != null &&
+        trackNumber != null;
+  }
 }

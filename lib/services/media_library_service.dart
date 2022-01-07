@@ -159,21 +159,8 @@ class MediaLibraryService extends ChangeNotifier {
   Future<void> syncStores(final Track track) async {
     Database db = await database;
 
-    if (track.title != null &&
-        track.artist != null &&
-        track.album != null &&
-        track.trackNumber != null) {
-      var trackMap = await trackStore.findFirst(
-        db,
-        finder: Finder(
-          filter: Filter.and([
-            Filter.equals('title', track.title),
-            Filter.equals('artist', track.artist),
-            Filter.equals('album', track.album),
-            Filter.equals('trackNumber', track.trackNumber),
-          ]),
-        ),
-      );
+    if (track.isTrackInfoAvailable()) {
+      var trackMap = await findTrackMap(track);
 
       if (trackMap == null) {
         await trackStore.add(db, track.toTrackMap());
@@ -192,17 +179,11 @@ class MediaLibraryService extends ChangeNotifier {
   Future<void> increasePlayCount(final Track track) async {
     Database db = await database;
 
-    var trackMap = await trackStore.findFirst(
-      db,
-      finder: Finder(
-        filter: Filter.and([
-          Filter.equals('title', track.title),
-          Filter.equals('artist', track.artist),
-          Filter.equals('album', track.album),
-          Filter.equals('trackNumber', track.trackNumber),
-        ]),
-      ),
-    );
+    RecordSnapshot<int, Map<String, Object?>>? trackMap;
+
+    if (track.isTrackInfoAvailable()) {
+      trackMap = await findTrackMap(track);
+    }
 
     track.lastPlayedTimestamp = Timestamp.now();
     if (trackMap == null) {
@@ -221,17 +202,11 @@ class MediaLibraryService extends ChangeNotifier {
   Future<void> increaseSkipCount(final Track track) async {
     Database db = await database;
 
-    var trackMap = await trackStore.findFirst(
-      db,
-      finder: Finder(
-        filter: Filter.and([
-          Filter.equals('title', track.title),
-          Filter.equals('artist', track.artist),
-          Filter.equals('album', track.album),
-          Filter.equals('trackNumber', track.trackNumber),
-        ]),
-      ),
-    );
+    RecordSnapshot<int, Map<String, Object?>>? trackMap;
+
+    if (track.isTrackInfoAvailable()) {
+      trackMap = await findTrackMap(track);
+    }
 
     track.lastSkippedTimestamp = Timestamp.now();
     if (trackMap == null) {
@@ -245,5 +220,22 @@ class MediaLibraryService extends ChangeNotifier {
       await trackStore.record(trackMap.key).update(db, track.toTrackMap());
     }
     await fileStore.record(track.uri).update(db, track.toFileMap());
+  }
+
+  Future<RecordSnapshot<int, Map<String, Object?>>?> findTrackMap(
+      final Track track) async {
+    Database db = await database;
+
+    return trackStore.findFirst(
+      db,
+      finder: Finder(
+        filter: Filter.and([
+          Filter.equals('title', track.title),
+          Filter.equals('artist', track.artist),
+          Filter.equals('album', track.album),
+          Filter.equals('trackNumber', track.trackNumber),
+        ]),
+      ),
+    );
   }
 }
