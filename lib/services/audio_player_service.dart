@@ -35,12 +35,7 @@ class AudioPlayerService {
           (position, bufferedPosition, duration) => PositionData(
               position, bufferedPosition, duration ?? Duration.zero));
 
-  Track? get currentTrack {
-    if (audioPlayer.currentIndex != null) {
-      return currentPlaylist?.items.elementAt(audioPlayer.currentIndex!);
-    }
-    return null;
-  }
+  Track? get currentTrack => audioPlayer.sequenceState?.currentSource?.tag;
 
   Future<Duration?> loadPlaylist(Playlist playlist) {
     if (currentPlaylist == playlist) {
