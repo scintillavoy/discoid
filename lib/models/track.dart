@@ -19,8 +19,8 @@ class Track {
     this.artist,
     this.album,
     this.trackNumber,
-    required this.playCount,
-    required this.skipCount,
+    this.playCount = 0,
+    this.skipCount = 0,
     this.lastPlayedTimestamp,
     this.lastSkippedTimestamp,
   });
