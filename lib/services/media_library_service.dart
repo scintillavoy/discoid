@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:discoid/models/track.dart';
@@ -14,7 +15,11 @@ import 'package:sembast/timestamp.dart';
 
 class MediaLibraryService extends ChangeNotifier {
   StreamSubscription<Duration>? increasePlayCountSubscription;
-  Map<String, Track> allTracks = <String, Track>{};
+  SplayTreeSet<Track> allTracks =
+      SplayTreeSet<Track>((final Track a, final Track b) {
+    String a_ = a.title ?? a.uri;
+    return a_.compareTo(b.title ?? b.uri);
+  });
   late Future<Database> database;
   var fileStore = stringMapStoreFactory.store('file');
   var trackStore = intMapStoreFactory.store('track');
@@ -52,7 +57,7 @@ class MediaLibraryService extends ChangeNotifier {
         }
 
         await syncStores(track);
-        allTracks[fileMap.key] = track;
+        allTracks.add(track);
       }
       notifyListeners();
     }();
@@ -94,7 +99,7 @@ class MediaLibraryService extends ChangeNotifier {
       return;
     }
 
-    if (allTracks.containsKey(uri)) {
+    if (allTracks.contains(Track(uri: uri))) {
       print("addTrackByUri: uri already exists in allTracks");
       return;
     }
@@ -120,7 +125,7 @@ class MediaLibraryService extends ChangeNotifier {
 
     await fileStore.record(uri).add(db, track.toFileMap());
     await syncStores(track);
-    allTracks[uri] = track;
+    allTracks.add(track);
     notifyListeners();
   }
 
