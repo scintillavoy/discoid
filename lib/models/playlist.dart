@@ -2,7 +2,7 @@ import 'package:discoid/models/track.dart';
 
 class Playlist {
   String name;
-  final List<Track> items;
+  Iterable<Track> items;
 
-  Playlist({required this.name, List<Track>? items}) : items = items ?? [];
+  Playlist({required this.name, required this.items});
 }

@@ -37,10 +37,9 @@ class AudioPlayerService {
 
   Track? get currentTrack {
     if (audioPlayer.currentIndex != null) {
-      return currentPlaylist?.items[audioPlayer.currentIndex!];
-    } else {
-      return null;
+      return currentPlaylist?.items.elementAt(audioPlayer.currentIndex!);
     }
+    return null;
   }
 
   Future<Duration?> loadPlaylist(Playlist playlist) {

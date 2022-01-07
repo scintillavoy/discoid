@@ -19,9 +19,9 @@ class PlaylistScreen extends StatelessWidget {
           for (int i = 0; i < _playlist.items.length; i++)
             ListTile(
               // selected: i == state.currentIndex,
-              title: Text(_playlist.items[i].title ?? "null"),
+              title: Text(_playlist.items.elementAt(i).title ?? "null"),
               subtitle: Text(
-                  "${_playlist.items[i].artist ?? "null"} - ${_playlist.items[i].album ?? "null"} - ${_playlist.items[i].playCount} - ${_playlist.items[i].skipCount}"),
+                  "${_playlist.items.elementAt(i).artist ?? "null"} - ${_playlist.items.elementAt(i).album ?? "null"} - ${_playlist.items.elementAt(i).playCount} - ${_playlist.items.elementAt(i).skipCount}"),
               onTap: () {
                 final audioPlayerService =
                     Provider.of<AudioPlayerService>(context, listen: false);

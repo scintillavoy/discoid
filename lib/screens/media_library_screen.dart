@@ -15,6 +15,8 @@ class MediaLibraryScreen extends StatelessWidget {
     return Consumer<MediaLibraryService>(
       builder: (_, mediaLibraryService, __) {
         SplayTreeSet<Track> allTracks = mediaLibraryService.allTracks;
+        Playlist allTracksPlaylist =
+            Playlist(name: 'allTracks', items: allTracks);
         return ListView.builder(
           itemCount: allTracks.length,
           itemBuilder: (_, index) {
@@ -27,11 +29,7 @@ class MediaLibraryScreen extends StatelessWidget {
                 final audioPlayerService =
                     Provider.of<AudioPlayerService>(context, listen: false);
                 audioPlayerService
-                    .loadPlaylist(Playlist(
-                      name: 'allTracks',
-                      // TODO: convert to List only when necessary
-                      items: allTracks.toList(),
-                    ))
+                    .loadPlaylist(allTracksPlaylist)
                     .then((_) => audioPlayerService.audioPlayer
                         .seek(Duration.zero, index: index))
                     .then((_) => audioPlayerService.audioPlayer.play());

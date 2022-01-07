@@ -33,8 +33,4 @@ class PlaylistService {
       ],
     ),
   ];
-
-  List<Track> get allItems {
-    return playlists.expand((playlist) => playlist.items).toList();
-  }
 }
