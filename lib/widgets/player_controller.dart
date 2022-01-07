@@ -1,5 +1,5 @@
-import 'package:discoid/screens/player_buttons.dart';
-import 'package:discoid/screens/progress_bar_container.dart';
+import 'package:discoid/widgets/player_buttons.dart';
+import 'package:discoid/widgets/progress_bar_container.dart';
 import 'package:flutter/material.dart';
 
 class PlayerController extends StatelessWidget {

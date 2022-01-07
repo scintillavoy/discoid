@@ -1,7 +1,7 @@
-import 'package:discoid/screens/import_button.dart';
 import 'package:discoid/screens/media_library_screen.dart';
-import 'package:discoid/screens/player_controller.dart';
 import 'package:discoid/screens/playlists.dart';
+import 'package:discoid/widgets/import_button.dart';
+import 'package:discoid/widgets/player_controller.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatelessWidget {
