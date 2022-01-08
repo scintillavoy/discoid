@@ -1,6 +1,7 @@
 import 'package:discoid/screens/autoplay_screen.dart';
 import 'package:discoid/screens/media_library_screen.dart';
 import 'package:discoid/screens/playlists.dart';
+import 'package:discoid/widgets/lyrics_panel.dart';
 import 'package:discoid/widgets/player_controller.dart';
 import 'package:flutter/material.dart';
 
@@ -28,11 +29,25 @@ class Home extends StatelessWidget {
                       ],
                     ),
                   ),
-                  body: TabBarView(children: [
-                    const AutoplayScreen(),
-                    const MediaLibraryScreen(),
-                    Playlists(),
-                  ]),
+                  body: Row(
+                    children: [
+                      const SizedBox(
+                        width: 500,
+                        child: LyricsPanel(),
+                      ),
+                      VerticalDivider(
+                        color: Theme.of(context).colorScheme.primary,
+                        thickness: 1,
+                      ),
+                      Expanded(
+                        child: TabBarView(children: [
+                          const AutoplayScreen(),
+                          const MediaLibraryScreen(),
+                          Playlists(),
+                        ]),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

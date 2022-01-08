@@ -22,6 +22,7 @@ class AutoplayScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
+                controller: ScrollController(),
                 itemCount: autoplayTracks.length,
                 itemBuilder: (_, index) {
                   Track track = autoplayTracks.elementAt(index);

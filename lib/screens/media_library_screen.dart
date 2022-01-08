@@ -22,6 +22,7 @@ class MediaLibraryScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
+                controller: ScrollController(),
                 itemCount: allTracks.length,
                 itemBuilder: (_, index) {
                   Track track = allTracks.elementAt(index);
