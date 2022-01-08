@@ -79,7 +79,7 @@ class MediaLibraryService extends ChangeNotifier {
         try {
           await readTagFromUri(track, fileMap.key);
         } on FileSystemException {
-          print("readTagFromUri(): File not found at ${fileMap.key}");
+          fileStore.record(fileMap.key).delete(db);
           continue;
         }
 
