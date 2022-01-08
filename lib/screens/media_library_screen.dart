@@ -43,7 +43,19 @@ class MediaLibraryScreen extends StatelessWidget {
                 },
               ),
             ),
-            const ImportButton(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  margin: const EdgeInsets.all(10),
+                  child: const ImportButton(false),
+                ),
+                Container(
+                  margin: const EdgeInsets.all(10),
+                  child: const ImportButton(true),
+                ),
+              ],
+            ),
           ],
         );
       },
