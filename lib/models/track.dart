@@ -13,6 +13,8 @@ class Track {
   Timestamp? lastPlayedTimestamp;
   Timestamp? lastSkippedTimestamp;
 
+  String? lyrics;
+
   Track({
     required this.uri,
     this.title,
@@ -23,6 +25,7 @@ class Track {
     this.skipCount = 0,
     this.lastPlayedTimestamp,
     this.lastSkippedTimestamp,
+    this.lyrics,
   });
 
   Map<String, dynamic> toTrackMap() {

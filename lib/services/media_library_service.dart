@@ -74,6 +74,7 @@ class MediaLibraryService extends ChangeNotifier {
               fileMap.value['lastPlayedTimestamp'] as Timestamp?,
           lastSkippedTimestamp:
               fileMap.value['lastSkippedTimestamp'] as Timestamp?,
+          lyrics: null,
         );
 
         try {
@@ -141,6 +142,7 @@ class MediaLibraryService extends ChangeNotifier {
       skipCount: 0,
       lastPlayedTimestamp: null,
       lastSkippedTimestamp: null,
+      lyrics: null,
     );
 
     try {
@@ -175,6 +177,7 @@ class MediaLibraryService extends ChangeNotifier {
       track.artist = flacTag['Artist'];
       track.album = flacTag['Album'];
       track.trackNumber = flacTag['TRACKNUMBER'];
+      track.lyrics = flacTag['Lyrics'];
     } else {
       ID3Tag id3Tag;
 
@@ -192,6 +195,7 @@ class MediaLibraryService extends ChangeNotifier {
       track.artist = id3Tag.artist;
       track.album = id3Tag.album;
       track.trackNumber = id3Tag.track;
+      track.lyrics = id3Tag.lyrics;
     }
   }
 
