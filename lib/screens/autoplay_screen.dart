@@ -43,7 +43,10 @@ class AutoplayScreen extends StatelessWidget {
                 },
               ),
             ),
-            const AutoplayButton(),
+            Container(
+              margin: const EdgeInsets.all(5),
+              child: const AutoplayButton(),
+            ),
           ],
         );
       },
