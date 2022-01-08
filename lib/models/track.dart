@@ -47,17 +47,6 @@ class Track {
     };
   }
 
-  Track.fromMap(Map<String, dynamic> map)
-      : uri = map['uri'],
-        title = map['title'],
-        artist = map['artist'],
-        album = map['album'],
-        trackNumber = map['trackNumber'],
-        playCount = map['playCount'],
-        skipCount = map['skipCount'],
-        lastPlayedTimestamp = map['lastPlayedTimestamp'],
-        lastSkippedTimestamp = map['lastSkippedTimestamp'];
-
   bool isTrackInfoAvailable() {
     return title != null &&
         artist != null &&
