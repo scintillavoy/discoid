@@ -23,7 +23,8 @@ class MediaLibraryService extends ChangeNotifier {
   SplayTreeSet<Track> allTracks =
       SplayTreeSet<Track>((final Track a, final Track b) {
     String a_ = a.title ?? a.uri;
-    return a_.compareTo(b.title ?? b.uri);
+    int result = a_.compareTo(b.title ?? b.uri);
+    return result != 0 ? result : a.uri.compareTo(b.uri);
   });
   SplayTreeSet<Track> autoplayTracks =
       SplayTreeSet<Track>((final Track a, final Track b) {
