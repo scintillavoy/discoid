@@ -4,6 +4,7 @@ import 'package:discoid/models/track.dart';
 import 'package:discoid/models/playlist.dart';
 import 'package:discoid/services/audio_player_service.dart';
 import 'package:discoid/services/media_library_service.dart';
+import 'package:discoid/widgets/import_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -17,25 +18,33 @@ class MediaLibraryScreen extends StatelessWidget {
         SplayTreeSet<Track> allTracks = mediaLibraryService.allTracks;
         Playlist allTracksPlaylist =
             Playlist(name: 'allTracks', items: allTracks);
-        return ListView.builder(
-          itemCount: allTracks.length,
-          itemBuilder: (_, index) {
-            Track track = allTracks.elementAt(index);
-            return ListTile(
-              title: Text(track.title ?? "null"),
-              subtitle: Text(
-                  "${track.artist ?? "null"} - ${track.album ?? "null"} - ${track.playCount} - ${track.skipCount}"),
-              onTap: () {
-                final audioPlayerService =
-                    Provider.of<AudioPlayerService>(context, listen: false);
-                audioPlayerService
-                    .loadPlaylist(allTracksPlaylist)
-                    .then((_) => audioPlayerService.audioPlayer
-                        .seek(Duration.zero, index: index))
-                    .then((_) => audioPlayerService.audioPlayer.play());
-              },
-            );
-          },
+        return Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: allTracks.length,
+                itemBuilder: (_, index) {
+                  Track track = allTracks.elementAt(index);
+                  return ListTile(
+                    title: Text(track.title ?? "null"),
+                    subtitle: Text(
+                        "${track.artist ?? "null"} - ${track.album ?? "null"} - ${track.playCount} - ${track.skipCount}"),
+                    onTap: () {
+                      final audioPlayerService =
+                          Provider.of<AudioPlayerService>(context,
+                              listen: false);
+                      audioPlayerService
+                          .loadPlaylist(allTracksPlaylist)
+                          .then((_) => audioPlayerService.audioPlayer
+                              .seek(Duration.zero, index: index))
+                          .then((_) => audioPlayerService.audioPlayer.play());
+                    },
+                  );
+                },
+              ),
+            ),
+            const ImportButton(),
+          ],
         );
       },
     );
