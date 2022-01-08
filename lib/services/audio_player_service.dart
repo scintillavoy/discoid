@@ -12,6 +12,7 @@ class AudioPlayerService {
   Playlist? currentPlaylist;
 
   AudioPlayerService() {
+    audioPlayer.setVolume(0.35);
     playbackCompleteSubscription =
         audioPlayer.playerStateStream.listen((state) {
       if (state.processingState == ProcessingState.completed) {
