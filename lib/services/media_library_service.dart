@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:discoid/models/track.dart';
 import 'package:discoid/services/audio_player_service.dart';
@@ -14,15 +15,41 @@ import 'package:sembast/sembast_io.dart';
 import 'package:sembast/timestamp.dart';
 
 class MediaLibraryService extends ChangeNotifier {
+  late Future<Database> database;
+  var fileStore = stringMapStoreFactory.store('file');
+  var trackStore = intMapStoreFactory.store('track');
+
   StreamSubscription<Duration>? increasePlayCountSubscription;
   SplayTreeSet<Track> allTracks =
       SplayTreeSet<Track>((final Track a, final Track b) {
     String a_ = a.title ?? a.uri;
     return a_.compareTo(b.title ?? b.uri);
   });
-  late Future<Database> database;
-  var fileStore = stringMapStoreFactory.store('file');
-  var trackStore = intMapStoreFactory.store('track');
+  SplayTreeSet<Track> autoplayTracks =
+      SplayTreeSet<Track>((final Track a, final Track b) {
+    final int currentTime = Timestamp.now().seconds;
+
+    final int aPlayedTimeDiff =
+        min(150, (currentTime - (a.lastPlayedTimestamp?.seconds ?? 0)) ~/ 3600);
+    final int aSkippedTimeDiff = min(
+        150, (currentTime - (a.lastSkippedTimestamp?.seconds ?? 0)) ~/ 3600);
+    final int aScore = a.playCount * 2 -
+        a.skipCount * 6 +
+        aPlayedTimeDiff +
+        aSkippedTimeDiff * 2;
+
+    final int bPlayedTimeDiff =
+        min(150, (currentTime - (b.lastPlayedTimestamp?.seconds ?? 0)) ~/ 3600);
+    final int bSkippedTimeDiff = min(
+        150, (currentTime - (b.lastSkippedTimestamp?.seconds ?? 0)) ~/ 3600);
+    final int bScore = b.playCount * 2 -
+        b.skipCount * 6 +
+        bPlayedTimeDiff +
+        bSkippedTimeDiff * 2;
+
+    int result = bScore.compareTo(aScore);
+    return result != 0 ? result : a.uri.compareTo(b.uri);
+  });
 
   MediaLibraryService() {
     database = () async {
@@ -225,6 +252,12 @@ class MediaLibraryService extends ChangeNotifier {
       await trackStore.record(trackMap.key).update(db, track.toTrackMap());
     }
     await fileStore.record(track.uri).update(db, track.toFileMap());
+  }
+
+  void generateAutoplayTracks() {
+    autoplayTracks.clear();
+    autoplayTracks.addAll(allTracks);
+    notifyListeners();
   }
 
   Future<RecordSnapshot<int, Map<String, Object?>>?> findTrackMap(
