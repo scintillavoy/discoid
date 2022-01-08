@@ -22,16 +22,16 @@ class Home extends StatelessWidget {
                     bottom: const TabBar(
                       isScrollable: true,
                       tabs: [
+                        Tab(text: "Autoplay"),
                         Tab(text: "Media Library"),
                         Tab(text: "Playlists"),
-                        Tab(text: "Autoplay"),
                       ],
                     ),
                   ),
                   body: TabBarView(children: [
+                    const AutoplayScreen(),
                     const MediaLibraryScreen(),
                     Playlists(),
-                    const AutoplayScreen(),
                   ]),
                 ),
               ),
