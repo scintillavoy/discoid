@@ -163,7 +163,7 @@ class MediaLibraryService extends ChangeNotifier {
 
   Future<void> readTagFromUri(final Track track, final String uri) async {
     if (uri.endsWith('.flac')) {
-      FlacInfo flacInfo = FlacInfo(File(Uri.decodeFull(Uri.parse(uri).path)));
+      FlacInfo flacInfo = FlacInfo(File(uri.split("://").last));
       List<Metadata> metadatas = await flacInfo.readMetadatas();
       Map<String, String> flacTag = <String, String>{};
 
@@ -184,8 +184,7 @@ class MediaLibraryService extends ChangeNotifier {
     } else {
       ID3Tag id3Tag;
 
-      id3Tag =
-          ID3TagReader.path(Uri.decodeFull(Uri.parse(uri).path)).readTagSync();
+      id3Tag = ID3TagReader.path(uri.split("://").last).readTagSync();
 
       track.title = id3Tag.title ?? track.title;
       track.artist = id3Tag.artist;
