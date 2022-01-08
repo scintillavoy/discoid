@@ -178,8 +178,15 @@ class MediaLibraryService extends ChangeNotifier {
     } else {
       ID3Tag id3Tag;
 
-      id3Tag =
-          ID3TagReader.path(Uri.decodeFull(Uri.parse(uri).path)).readTagSync();
+      try {
+        id3Tag = ID3TagReader.path(Uri.decodeFull(Uri.parse(uri).path))
+            .readTagSync();
+      } on FileSystemException {
+        rethrow;
+      } catch (e) {
+        print("Unable to read id3 tag: $e");
+        return;
+      }
 
       track.title = id3Tag.title ?? track.title;
       track.artist = id3Tag.artist;
