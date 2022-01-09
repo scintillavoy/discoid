@@ -91,6 +91,7 @@ class MediaLibraryService extends ChangeNotifier {
         allTracks.add(track);
       }
       notifyListeners();
+      print("Initialization completed. ${allTracks.length} tracks loaded.");
     }();
   }
 
