@@ -46,6 +46,7 @@ dependencies:
   flac_metadata:
     git:
       url: git://github.com/scintillavoy/flac_metadata.git
+      ref: development
 
 dev_dependencies:
   flutter_test:

@@ -103,7 +103,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
+      ref: development
       resolved-ref: "4ce7fcb3d4aed27a14971a68ea2b7d25d38260d9"
       url: "git://github.com/scintillavoy/flac_metadata.git"
     source: git
