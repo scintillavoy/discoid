@@ -16,7 +16,7 @@ class LyricsPanel extends StatelessWidget {
           return SingleChildScrollView(
             controller: ScrollController(),
             child: Container(
-              margin: const EdgeInsets.all(10),
+              margin: const EdgeInsets.fromLTRB(10, 15, 10, 30),
               child: Text(
                 ((snapshot.data as SequenceState?)?.currentSource?.tag
                             as Track?)
