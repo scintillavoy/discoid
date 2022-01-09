@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:sembast/timestamp.dart';
 
 class Track {
@@ -14,6 +16,7 @@ class Track {
   Timestamp? lastSkippedTimestamp;
 
   String? lyrics;
+  Uint8List? artwork;
 
   Track({
     required this.uri,
@@ -26,6 +29,7 @@ class Track {
     this.lastPlayedTimestamp,
     this.lastSkippedTimestamp,
     this.lyrics,
+    this.artwork,
   });
 
   Map<String, dynamic> toTrackMap() {

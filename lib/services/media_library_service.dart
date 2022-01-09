@@ -2,13 +2,14 @@ import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:discoid/models/track.dart';
 import 'package:discoid/services/audio_player_service.dart';
 import 'package:flac_metadata/flacstream.dart';
 import 'package:flac_metadata/metadata.dart';
 import 'package:flutter/material.dart';
-import 'package:id3tag/id3tag.dart';
+import 'package:id3tag/id3tag.dart' as id3tag;
 import 'package:just_audio/just_audio.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
@@ -76,6 +77,7 @@ class MediaLibraryService extends ChangeNotifier {
           lastSkippedTimestamp:
               fileMap.value['lastSkippedTimestamp'] as Timestamp?,
           lyrics: null,
+          artwork: null,
         );
 
         try {
@@ -144,6 +146,7 @@ class MediaLibraryService extends ChangeNotifier {
       lastPlayedTimestamp: null,
       lastSkippedTimestamp: null,
       lyrics: null,
+      artwork: null,
     );
 
     try {
@@ -173,6 +176,8 @@ class MediaLibraryService extends ChangeNotifier {
             flacTag[element.substring(0, element.indexOf('='))] =
                 element.substring(element.indexOf('=') + 1);
           }
+        } else if (metadata is Picture) {
+          track.artwork = metadata.image;
         }
       }
 
@@ -182,15 +187,17 @@ class MediaLibraryService extends ChangeNotifier {
       track.trackNumber = flacTag['TRACKNUMBER'];
       track.lyrics = flacTag['Lyrics'];
     } else {
-      ID3Tag id3Tag;
+      id3tag.ID3Tag tag =
+          id3tag.ID3TagReader.path(uri.split("://").last).readTagSync();
 
-      id3Tag = ID3TagReader.path(uri.split("://").last).readTagSync();
-
-      track.title = id3Tag.title ?? track.title;
-      track.artist = id3Tag.artist;
-      track.album = id3Tag.album;
-      track.trackNumber = id3Tag.track;
-      track.lyrics = id3Tag.lyrics;
+      track.title = tag.title ?? track.title;
+      track.artist = tag.artist;
+      track.album = tag.album;
+      track.trackNumber = tag.track;
+      track.lyrics = tag.lyrics;
+      if (tag.pictures.isNotEmpty) {
+        track.artwork = Uint8List.fromList(tag.pictures.first.imageData);
+      }
     }
   }
 
