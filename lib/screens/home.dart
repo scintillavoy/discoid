@@ -32,7 +32,7 @@ class Home extends StatelessWidget {
                   body: Row(
                     children: [
                       const SizedBox(
-                        width: 500,
+                        width: 550,
                         child: LyricsPanel(),
                       ),
                       VerticalDivider(

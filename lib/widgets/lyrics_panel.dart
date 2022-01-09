@@ -23,7 +23,7 @@ class LyricsPanel extends StatelessWidget {
                         ?.lyrics ??
                     "Lyrics not available.",
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 15),
+                style: const TextStyle(fontSize: 16),
               ),
             ),
           );
