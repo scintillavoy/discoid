@@ -11,6 +11,8 @@ import 'package:flac_metadata/metadata.dart';
 import 'package:flutter/material.dart';
 import 'package:id3tag/id3tag.dart' as id3tag;
 import 'package:just_audio/just_audio.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sembast/sembast.dart';
 import 'package:sembast/sembast_io.dart';
 import 'package:sembast/timestamp.dart';
@@ -55,7 +57,10 @@ class MediaLibraryService extends ChangeNotifier {
 
   MediaLibraryService() {
     database = () async {
-      Database db = await databaseFactoryIo.openDatabase('sample.db');
+      Directory directory = await getApplicationSupportDirectory();
+      await directory.create(recursive: true);
+      Database db = await databaseFactoryIo
+          .openDatabase(join(directory.path, 'database.db'));
       return db;
     }();
     () async {
