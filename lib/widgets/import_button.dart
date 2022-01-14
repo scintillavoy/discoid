@@ -37,7 +37,7 @@ class ImportButton extends StatelessWidget {
               if (result == null) return;
               for (var file in result.files) {
                 if (!allowedExtensions.contains(file.path?.split(".").last)) {
-                  return;
+                  continue;
                 }
                 mediaLibraryService.addTrackByUri("file://${file.path}");
               }
