@@ -55,9 +55,6 @@ class Track {
   }
 
   bool isTrackInfoAvailable() {
-    return title != null &&
-        artist != null &&
-        album != null &&
-        trackNumber != null;
+    return title != null && artist != null;
   }
 }
