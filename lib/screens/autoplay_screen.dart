@@ -27,6 +27,16 @@ class AutoplayScreen extends StatelessWidget {
                 itemBuilder: (_, index) {
                   Track track = autoplayTracks.elementAt(index);
                   return ListTile(
+                    leading: track.artwork != null
+                        ? Image.memory(
+                            track.artwork!,
+                            width: 48,
+                          )
+                        : Icon(
+                            Icons.music_note,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 48,
+                          ),
                     title: Text(track.title ?? "null"),
                     subtitle: Text(
                         "${track.artist ?? "null"} - ${track.album ?? "null"} - ${track.playCount} - ${track.skipCount}"),
