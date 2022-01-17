@@ -26,10 +26,9 @@ class PlaylistScreen extends StatelessWidget {
               onTap: () {
                 final audioPlayerService =
                     Provider.of<AudioPlayerService>(context, listen: false);
+                audioPlayerService.setPlaylist(_playlist);
                 audioPlayerService
-                    .loadPlaylist(_playlist)
-                    .then((_) => audioPlayerService.audioPlayer
-                        .seek(Duration.zero, index: i))
+                    .seekToIndex(i, reshuffle: true)
                     .then((_) => audioPlayerService.audioPlayer.play());
               },
             ),

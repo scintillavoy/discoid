@@ -44,10 +44,9 @@ class MediaLibraryScreen extends StatelessWidget {
                       final audioPlayerService =
                           Provider.of<AudioPlayerService>(context,
                               listen: false);
+                      audioPlayerService.setPlaylist(allTracksPlaylist);
                       audioPlayerService
-                          .loadPlaylist(allTracksPlaylist)
-                          .then((_) => audioPlayerService.audioPlayer
-                              .seek(Duration.zero, index: index))
+                          .seekToIndex(index, reshuffle: true)
                           .then((_) => audioPlayerService.audioPlayer.play());
                     },
                   );

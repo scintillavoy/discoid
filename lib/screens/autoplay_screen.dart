@@ -44,10 +44,9 @@ class AutoplayScreen extends StatelessWidget {
                       final audioPlayerService =
                           Provider.of<AudioPlayerService>(context,
                               listen: false);
+                      audioPlayerService.setPlaylist(autoplayTracksPlaylist);
                       audioPlayerService
-                          .loadPlaylist(autoplayTracksPlaylist)
-                          .then((_) => audioPlayerService.audioPlayer
-                              .seek(Duration.zero, index: index))
+                          .seekToIndex(index, reshuffle: true)
                           .then((_) => audioPlayerService.audioPlayer.play());
                     },
                   );
