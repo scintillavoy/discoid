@@ -21,7 +21,7 @@ class LyricsPanel extends StatelessWidget {
                 ((snapshot.data as SequenceState?)?.currentSource?.tag
                             as Track?)
                         ?.lyrics ??
-                    "Lyrics not available.",
+                    "Lyrics Not Available",
                 textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 16),
               ),
