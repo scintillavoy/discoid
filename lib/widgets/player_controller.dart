@@ -1,3 +1,4 @@
+import 'package:discoid/widgets/now_playing.dart';
 import 'package:discoid/widgets/player_buttons.dart';
 import 'package:discoid/widgets/progress_bar_container.dart';
 import 'package:flutter/material.dart';
@@ -10,9 +11,10 @@ class PlayerController extends StatelessWidget {
     return Column(
       children: [
         Container(
-          margin: const EdgeInsets.only(top: 20),
-          child: const PlayerButtons(),
+          margin: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+          child: const NowPlaying(),
         ),
+        const PlayerButtons(),
         Container(
           margin: const EdgeInsets.all(10),
           child: const ProgressBarContainer(),
