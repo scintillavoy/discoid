@@ -16,7 +16,9 @@ class Playlists extends StatelessWidget {
           key: _navigatorKey,
           onGenerateRoute: (_) => MaterialPageRoute(
             builder: (_) => ListView(
+              key: const PageStorageKey("PlaylistsListView"),
               controller: ScrollController(),
+              itemExtent: 64,
               children: playlistService.playlists.map((playlist) {
                 return ListTile(
                   title: Text(playlist.name),

@@ -15,7 +15,9 @@ class PlaylistScreen extends StatelessWidget {
         title: Text(_playlist.name),
       ),
       body: ListView(
+        key: const PageStorageKey("PlaylistScreenListView"),
         controller: ScrollController(),
+        itemExtent: 64,
         children: [
           for (int i = 0; i < _playlist.items.length; i++)
             ListTile(

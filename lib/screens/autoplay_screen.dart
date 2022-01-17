@@ -22,8 +22,10 @@ class AutoplayScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
+                key: const PageStorageKey("AutoplayScreenListView"),
                 controller: ScrollController(),
                 itemCount: autoplayTracks.length,
+                itemExtent: 64,
                 itemBuilder: (_, index) {
                   Track track = autoplayTracks.elementAt(index);
                   return ListTile(

@@ -22,8 +22,10 @@ class MediaLibraryScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
+                key: const PageStorageKey("MediaLibraryScreenListView"),
                 controller: ScrollController(),
                 itemCount: allTracks.length,
+                itemExtent: 64,
                 itemBuilder: (_, index) {
                   Track track = allTracks.elementAt(index);
                   return ListTile(
