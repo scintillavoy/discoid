@@ -9,6 +9,7 @@ class Track {
   String? artist;
   String? album;
   String? trackNumber;
+  String? discNumber;
 
   int playCount;
   int skipCount;
@@ -24,6 +25,7 @@ class Track {
     this.artist,
     this.album,
     this.trackNumber,
+    this.discNumber,
     this.playCount = 0,
     this.skipCount = 0,
     this.lastPlayedTimestamp,
@@ -38,6 +40,7 @@ class Track {
       'artist': artist,
       'album': album,
       'trackNumber': trackNumber,
+      'discNumber': discNumber,
       'playCount': playCount,
       'skipCount': skipCount,
       'lastPlayedTimestamp': lastPlayedTimestamp,

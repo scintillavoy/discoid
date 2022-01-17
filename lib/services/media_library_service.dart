@@ -75,6 +75,7 @@ class MediaLibraryService extends ChangeNotifier {
           artist: null,
           album: null,
           trackNumber: null,
+          discNumber: null,
           playCount: fileMap.value['playCount'] as int,
           skipCount: fileMap.value['skipCount'] as int,
           lastPlayedTimestamp:
@@ -147,6 +148,7 @@ class MediaLibraryService extends ChangeNotifier {
       artist: null,
       album: null,
       trackNumber: null,
+      discNumber: null,
       playCount: 0,
       skipCount: 0,
       lastPlayedTimestamp: null,
@@ -191,6 +193,7 @@ class MediaLibraryService extends ChangeNotifier {
       track.artist = flacTag['Artist'];
       track.album = flacTag['Album'];
       track.trackNumber = flacTag['TRACKNUMBER'];
+      track.discNumber = flacTag['DISCNUMBER'];
       track.lyrics = flacTag['Lyrics'];
     } else {
       id3tag.ID3Tag tag =
@@ -199,7 +202,12 @@ class MediaLibraryService extends ChangeNotifier {
       track.title = tag.title ?? track.title;
       track.artist = tag.artist;
       track.album = tag.album;
-      track.trackNumber = tag.track;
+      track.trackNumber = tag.track?.split('/').first;
+      track.discNumber = tag
+          .frameWithTypeAndName<id3tag.TextInformation>("TPOS")
+          ?.value
+          .split('/')
+          .first;
       track.lyrics = tag.lyrics;
       if (tag.pictures.isNotEmpty) {
         track.artwork = Uint8List.fromList(tag.pictures.first.imageData);
@@ -291,6 +299,7 @@ class MediaLibraryService extends ChangeNotifier {
           Filter.equals('artist', track.artist),
           Filter.equals('album', track.album),
           Filter.equals('trackNumber', track.trackNumber),
+          Filter.equals('discNumber', track.discNumber),
         ]),
       ),
     );
