@@ -9,8 +9,8 @@ class Track {
   String? title;
   String? artist;
   Album album;
-  String? trackNumber;
-  String? discNumber;
+  int? trackNumber;
+  int? discNumber;
 
   int playCount;
   int skipCount;

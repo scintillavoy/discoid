@@ -213,8 +213,12 @@ class MediaLibraryService extends ChangeNotifier {
       track.artist = flacTag['Artist'];
       track.album.name = flacTag['Album'];
       track.album.albumArtist = flacTag['ALBUMARTIST'];
-      track.trackNumber = flacTag['TRACKNUMBER'];
-      track.discNumber = flacTag['DISCNUMBER'];
+      if (flacTag['TRACKNUMBER'] != null) {
+        track.trackNumber = int.tryParse(flacTag['TRACKNUMBER']!);
+      }
+      if (flacTag['DISCNUMBER'] != null) {
+        track.discNumber = int.tryParse(flacTag['DISCNUMBER']!);
+      }
       track.lyrics = flacTag['Lyrics'];
     } else {
       id3tag.ID3Tag tag =
@@ -225,12 +229,16 @@ class MediaLibraryService extends ChangeNotifier {
       track.album.name = tag.album;
       track.album.albumArtist =
           tag.frameWithTypeAndName<id3tag.TextInformation>("TPE2")?.value;
-      track.trackNumber = tag.track?.split('/').first;
-      track.discNumber = tag
-          .frameWithTypeAndName<id3tag.TextInformation>("TPOS")
-          ?.value
-          .split('/')
-          .first;
+      if (tag.track != null) {
+        track.trackNumber = int.tryParse(tag.track!.split('/').first);
+      }
+      if (tag.frameWithTypeAndName<id3tag.TextInformation>("TPOS") != null) {
+        track.discNumber = int.tryParse(tag
+            .frameWithTypeAndName<id3tag.TextInformation>("TPOS")!
+            .value
+            .split('/')
+            .first);
+      }
       track.lyrics = tag.lyrics;
       if (tag.pictures.isNotEmpty) {
         track.artwork = Uint8List.fromList(tag.pictures.first.imageData);

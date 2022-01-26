@@ -10,9 +10,9 @@ class Album {
   Album({this.name, this.albumArtist})
       : tracks = SplayTreeSet<Track>((final Track a, final Track b) {
           int result;
-          result = (a.discNumber ?? "").compareTo(b.discNumber ?? "");
+          result = (a.discNumber ?? 0).compareTo(b.discNumber ?? 0);
           if (result != 0) return result;
-          result = (a.trackNumber ?? "").compareTo(b.trackNumber ?? "");
+          result = (a.trackNumber ?? 0).compareTo(b.trackNumber ?? 0);
           if (result != 0) return result;
           result = (a.title ?? a.uri)
               .toLowerCase()
