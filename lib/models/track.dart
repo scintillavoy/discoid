@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:discoid/models/album.dart';
 import 'package:sembast/timestamp.dart';
 
 class Track {
@@ -7,7 +8,7 @@ class Track {
 
   String? title;
   String? artist;
-  String? album;
+  Album album;
   String? trackNumber;
   String? discNumber;
 
@@ -23,7 +24,7 @@ class Track {
     required this.uri,
     this.title,
     this.artist,
-    this.album,
+    Album? album,
     this.trackNumber,
     this.discNumber,
     this.playCount = 0,
@@ -32,13 +33,13 @@ class Track {
     this.lastSkippedTimestamp,
     this.lyrics,
     this.artwork,
-  });
+  }) : album = album ?? Album();
 
   Map<String, dynamic> toTrackMap() {
     return {
       'title': title,
       'artist': artist,
-      'album': album,
+      'album': album.name,
       'trackNumber': trackNumber,
       'discNumber': discNumber,
       'playCount': playCount,

@@ -1,3 +1,4 @@
+import 'package:discoid/screens/albums.dart';
 import 'package:discoid/screens/autoplay_screen.dart';
 import 'package:discoid/screens/media_library_screen.dart';
 import 'package:discoid/screens/playlists.dart';
@@ -15,7 +16,7 @@ class Home extends StatelessWidget {
         child: Column(
           children: [
             DefaultTabController(
-              length: 3,
+              length: 4,
               child: Expanded(
                 child: Scaffold(
                   appBar: AppBar(
@@ -25,6 +26,7 @@ class Home extends StatelessWidget {
                       tabs: [
                         Tab(text: "Autoplay"),
                         Tab(text: "Media Library"),
+                        Tab(text: "Albums"),
                         Tab(text: "Playlists"),
                       ],
                     ),
@@ -43,6 +45,7 @@ class Home extends StatelessWidget {
                         child: TabBarView(children: [
                           const AutoplayScreen(),
                           const MediaLibraryScreen(),
+                          Albums(),
                           Playlists(),
                         ]),
                       ),

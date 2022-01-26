@@ -41,7 +41,7 @@ class AutoplayScreen extends StatelessWidget {
                           ),
                     title: Text("${track.title}"),
                     subtitle: Text(
-                        "${track.artist} - ${track.album} - ${track.trackNumber} - ${track.discNumber} - ${track.playCount} - ${track.skipCount}"),
+                        "${track.artist} - ${track.album.name} - ${track.trackNumber} - ${track.discNumber} - ${track.playCount} - ${track.skipCount}"),
                     onTap: () {
                       final audioPlayerService =
                           Provider.of<AudioPlayerService>(context,

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:discoid/models/album.dart';
 import 'package:discoid/models/track.dart';
 import 'package:discoid/services/audio_player_service.dart';
 import 'package:flac_metadata/flacstream.dart';
@@ -25,9 +26,12 @@ class MediaLibraryService extends ChangeNotifier {
   StreamSubscription<Duration>? increasePlayCountSubscription;
   SplayTreeSet<Track> allTracks =
       SplayTreeSet<Track>((final Track a, final Track b) {
-    String a_ = a.title ?? a.uri;
-    int result = a_.compareTo(b.title ?? b.uri);
-    return result != 0 ? result : a.uri.compareTo(b.uri);
+    int result = (a.title ?? a.uri)
+        .toLowerCase()
+        .compareTo((b.title ?? b.uri).toLowerCase());
+    return result != 0
+        ? result
+        : a.uri.toLowerCase().compareTo(b.uri.toLowerCase());
   });
   SplayTreeSet<Track> autoplayTracks =
       SplayTreeSet<Track>((final Track a, final Track b) {
@@ -51,8 +55,20 @@ class MediaLibraryService extends ChangeNotifier {
         bPlayedTimeDiff +
         bSkippedTimeDiff * 2;
 
-    int result = bScore.compareTo(aScore);
-    return result != 0 ? result : a.uri.compareTo(b.uri);
+    int result;
+    result = bScore.compareTo(aScore);
+    if (result != 0) return result;
+    return a.uri.toLowerCase().compareTo(b.uri.toLowerCase());
+  });
+  SplayTreeSet<Album> allAlbums =
+      SplayTreeSet<Album>((final Album a, final Album b) {
+    int result;
+    result =
+        (a.name ?? "").toLowerCase().compareTo((b.name ?? "").toLowerCase());
+    if (result != 0) return result;
+    return (a.albumArtist ?? "")
+        .toLowerCase()
+        .compareTo((b.albumArtist ?? "").toLowerCase());
   });
 
   MediaLibraryService() {
@@ -94,10 +110,13 @@ class MediaLibraryService extends ChangeNotifier {
         }
 
         await syncStores(track);
-        allTracks.add(track);
+        addTrackToAllTracks(track);
+        addTrackToAllAlbums(track);
       }
       notifyListeners();
-      print("Initialization completed. ${allTracks.length} tracks loaded.");
+      print("Initialization completed.\n"
+          "${allTracks.length} tracks loaded.\n"
+          "${allAlbums.length} albums loaded.");
     }();
   }
 
@@ -168,7 +187,8 @@ class MediaLibraryService extends ChangeNotifier {
 
     await fileStore.record(uri).add(db, track.toFileMap());
     await syncStores(track);
-    allTracks.add(track);
+    addTrackToAllTracks(track);
+    addTrackToAllAlbums(track);
     notifyListeners();
   }
 
@@ -191,7 +211,8 @@ class MediaLibraryService extends ChangeNotifier {
 
       track.title = flacTag['Title'] ?? track.title;
       track.artist = flacTag['Artist'];
-      track.album = flacTag['Album'];
+      track.album.name = flacTag['Album'];
+      track.album.albumArtist = flacTag['ALBUMARTIST'];
       track.trackNumber = flacTag['TRACKNUMBER'];
       track.discNumber = flacTag['DISCNUMBER'];
       track.lyrics = flacTag['Lyrics'];
@@ -201,7 +222,9 @@ class MediaLibraryService extends ChangeNotifier {
 
       track.title = tag.title ?? track.title;
       track.artist = tag.artist;
-      track.album = tag.album;
+      track.album.name = tag.album;
+      track.album.albumArtist =
+          tag.frameWithTypeAndName<id3tag.TextInformation>("TPE2")?.value;
       track.trackNumber = tag.track?.split('/').first;
       track.discNumber = tag
           .frameWithTypeAndName<id3tag.TextInformation>("TPOS")
@@ -233,6 +256,19 @@ class MediaLibraryService extends ChangeNotifier {
         await fileStore.record(track.uri).update(db, track.toFileMap());
       }
     }
+  }
+
+  void addTrackToAllTracks(Track track) {
+    allTracks.add(track);
+  }
+
+  void addTrackToAllAlbums(Track track) {
+    track.album = allAlbums.lookup(track.album) ??
+        () {
+          allAlbums.add(track.album);
+          return track.album;
+        }();
+    track.album.tracks.add(track);
   }
 
   Future<void> increasePlayCount(final Track track) async {
@@ -297,7 +333,7 @@ class MediaLibraryService extends ChangeNotifier {
         filter: Filter.and([
           Filter.equals('title', track.title),
           Filter.equals('artist', track.artist),
-          Filter.equals('album', track.album),
+          Filter.equals('album', track.album.name),
           Filter.equals('trackNumber', track.trackNumber),
           Filter.equals('discNumber', track.discNumber),
         ]),
