@@ -32,7 +32,7 @@ class PlaylistScreen extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary,
                       size: 48,
                     ),
-              title: Text("${_playlist.items.elementAt(i).title}"),
+              title: Text(_playlist.items.elementAt(i).title),
               subtitle: Text(
                   "${_playlist.items.elementAt(i).artist} - ${_playlist.items.elementAt(i).album.name} - ${_playlist.items.elementAt(i).trackNumber} - ${_playlist.items.elementAt(i).discNumber} - ${_playlist.items.elementAt(i).playCount} - ${_playlist.items.elementAt(i).skipCount}"),
               onTap: () {

@@ -6,7 +6,7 @@ import 'package:sembast/timestamp.dart';
 class Track {
   final String uri;
 
-  String? title;
+  String title;
   String? artist;
   Album album;
   int? trackNumber;
@@ -22,7 +22,7 @@ class Track {
 
   Track({
     required this.uri,
-    this.title,
+    required this.title,
     this.artist,
     Album? album,
     this.trackNumber,
@@ -59,6 +59,6 @@ class Track {
   }
 
   bool isTrackInfoAvailable() {
-    return title != null && artist != null;
+    return artist != null;
   }
 }

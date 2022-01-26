@@ -26,12 +26,12 @@ class MediaLibraryService extends ChangeNotifier {
   StreamSubscription<Duration>? increasePlayCountSubscription;
   SplayTreeSet<Track> allTracks =
       SplayTreeSet<Track>((final Track a, final Track b) {
-    int result = (a.title ?? a.uri)
-        .toLowerCase()
-        .compareTo((b.title ?? b.uri).toLowerCase());
-    return result != 0
-        ? result
-        : a.uri.toLowerCase().compareTo(b.uri.toLowerCase());
+    int result;
+    result = a.uri.compareTo(b.uri);
+    if (result == 0) return result;
+    result = a.title.toLowerCase().compareTo(b.title.toLowerCase());
+    if (result != 0) return result;
+    return a.uri.toLowerCase().compareTo(b.uri.toLowerCase());
   });
   SplayTreeSet<Track> autoplayTracks =
       SplayTreeSet<Track>((final Track a, final Track b) {
@@ -156,7 +156,7 @@ class MediaLibraryService extends ChangeNotifier {
       return;
     }
 
-    if (allTracks.contains(Track(uri: uri))) {
+    if (allTracks.contains(Track(uri: uri, title: uri.split('/').last))) {
       print("addTrackByUri: uri already exists in allTracks");
       return;
     }

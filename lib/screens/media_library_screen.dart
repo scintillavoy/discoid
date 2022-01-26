@@ -39,7 +39,7 @@ class MediaLibraryScreen extends StatelessWidget {
                             color: Theme.of(context).colorScheme.primary,
                             size: 48,
                           ),
-                    title: Text("${track.title}"),
+                    title: Text(track.title),
                     subtitle: Text(
                         "${track.artist} - ${track.album.name} - ${track.trackNumber} - ${track.discNumber} - ${track.playCount} - ${track.skipCount}"),
                     onTap: () {

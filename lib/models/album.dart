@@ -14,9 +14,7 @@ class Album {
           if (result != 0) return result;
           result = (a.trackNumber ?? 0).compareTo(b.trackNumber ?? 0);
           if (result != 0) return result;
-          result = (a.title ?? a.uri)
-              .toLowerCase()
-              .compareTo((b.title ?? b.uri).toLowerCase());
+          result = a.title.toLowerCase().compareTo(b.title.toLowerCase());
           return result != 0
               ? result
               : a.uri.toLowerCase().compareTo(b.uri.toLowerCase());

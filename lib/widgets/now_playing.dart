@@ -36,7 +36,7 @@ class NowPlaying extends StatelessWidget {
                             alignment: Alignment.center,
                             height: 20,
                             child: Text(
-                              currentTrack.title ?? currentTrack.uri,
+                              currentTrack.title,
                               textAlign: TextAlign.center,
                               style: const TextStyle(fontSize: 16),
                             ),
