@@ -8,8 +8,8 @@ import 'package:discoid/widgets/import_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MediaLibraryScreen extends StatelessWidget {
-  const MediaLibraryScreen({Key? key}) : super(key: key);
+class Tracks extends StatelessWidget {
+  const Tracks({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class MediaLibraryScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
-                key: const PageStorageKey("MediaLibraryScreenListView"),
+                key: const PageStorageKey("TracksListView"),
                 controller: ScrollController(),
                 itemCount: allTracks.length,
                 itemExtent: 64,
