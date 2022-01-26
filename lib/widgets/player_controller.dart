@@ -11,7 +11,7 @@ class PlayerController extends StatelessWidget {
     return Column(
       children: [
         Container(
-          margin: const EdgeInsets.fromLTRB(0, 20, 0, 10),
+          margin: const EdgeInsets.only(top: 10),
           child: const NowPlaying(),
         ),
         const PlayerButtons(),

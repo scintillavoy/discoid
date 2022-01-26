@@ -15,26 +15,50 @@ class NowPlaying extends StatelessWidget {
         builder: (_, snapshot) {
           Track? currentTrack =
               (snapshot.data as SequenceState?)?.currentSource?.tag;
-          return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              currentTrack != null && currentTrack.artwork != null
-                  ? Image.memory(currentTrack.artwork!, width: 48)
-                  : Icon(
-                      Icons.music_note,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 48,
-                    ),
-              const SizedBox(width: 10),
-              Text(
+          return SizedBox(
+            height: 64,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                currentTrack != null && currentTrack.artwork != null
+                    ? Image.memory(currentTrack.artwork!, width: 48)
+                    : Icon(
+                        Icons.music_note,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 48,
+                      ),
+                const SizedBox(width: 10),
                 currentTrack != null
-                    ? "${currentTrack.title ?? currentTrack.uri}\n"
-                        "${currentTrack.artist ?? "Unknown Artist"}"
-                    : "Not Playing",
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16),
-              ),
-            ],
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            alignment: Alignment.center,
+                            height: 20,
+                            child: Text(
+                              currentTrack.title ?? currentTrack.uri,
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          Container(
+                            alignment: Alignment.center,
+                            height: 20,
+                            child: Text(
+                              currentTrack.artist ?? "Unknown Artist",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ],
+                      )
+                    : const Text(
+                        "Not Playing",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16),
+                      ),
+              ],
+            ),
           );
         },
       );
