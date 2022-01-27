@@ -74,19 +74,17 @@ class PlayerButtons extends StatelessWidget {
   }
 
   Widget _playPauseButton(PlayerState? playerState, AudioPlayer audioPlayer) {
-    if (playerState?.playing != true) {
-      return IconButton(
-        icon: const Icon(Icons.play_arrow),
-        iconSize: 64.0,
-        onPressed: audioPlayer.play,
-      );
-    } else {
-      return IconButton(
-        icon: const Icon(Icons.pause),
-        iconSize: 64.0,
-        onPressed: audioPlayer.pause,
-      );
-    }
+    return (playerState?.playing ?? false)
+        ? IconButton(
+            icon: const Icon(Icons.pause),
+            iconSize: 64.0,
+            onPressed: audioPlayer.pause,
+          )
+        : IconButton(
+            icon: const Icon(Icons.play_arrow),
+            iconSize: 64.0,
+            onPressed: audioPlayer.play,
+          );
   }
 
   Widget _nextButton(AudioPlayerService audioPlayerService) {
