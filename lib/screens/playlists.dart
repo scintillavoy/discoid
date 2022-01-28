@@ -3,20 +3,29 @@ import 'package:discoid/services/playlist_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Playlists extends StatelessWidget {
+class Playlists extends StatefulWidget {
+  const Playlists({Key? key}) : super(key: key);
+
+  @override
+  _PlaylistsState createState() => _PlaylistsState();
+}
+
+class _PlaylistsState extends State<Playlists>
+    with AutomaticKeepAliveClientMixin<Playlists> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
-  Playlists({Key? key}) : super(key: key);
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<PlaylistService>(
       builder: (_, playlistService, __) {
         return Navigator(
           key: _navigatorKey,
           onGenerateRoute: (_) => MaterialPageRoute(
             builder: (_) => ListView(
-              key: const PageStorageKey("PlaylistsListView"),
               controller: ScrollController(),
               itemExtent: 64,
               children: playlistService.playlists.map((playlist) {

@@ -8,11 +8,21 @@ import 'package:discoid/widgets/autoplay_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class AutoplayScreen extends StatelessWidget {
+class AutoplayScreen extends StatefulWidget {
   const AutoplayScreen({Key? key}) : super(key: key);
 
   @override
+  _AutoplayScreenState createState() => _AutoplayScreenState();
+}
+
+class _AutoplayScreenState extends State<AutoplayScreen>
+    with AutomaticKeepAliveClientMixin<AutoplayScreen> {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<MediaLibraryService>(
       builder: (_, mediaLibraryService, __) {
         SplayTreeSet<Track> autoplayTracks = mediaLibraryService.autoplayTracks;
@@ -22,7 +32,6 @@ class AutoplayScreen extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
-                key: const PageStorageKey("AutoplayScreenListView"),
                 controller: ScrollController(),
                 itemCount: autoplayTracks.length,
                 itemExtent: 64,

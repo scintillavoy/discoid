@@ -4,20 +4,29 @@ import 'package:discoid/services/media_library_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Albums extends StatelessWidget {
+class Albums extends StatefulWidget {
+  const Albums({Key? key}) : super(key: key);
+
+  @override
+  _AlbumsState createState() => _AlbumsState();
+}
+
+class _AlbumsState extends State<Albums>
+    with AutomaticKeepAliveClientMixin<Albums> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
-  Albums({Key? key}) : super(key: key);
+  @override
+  bool get wantKeepAlive => true;
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<MediaLibraryService>(
       builder: (_, mediaLibraryService, __) {
         return Navigator(
           key: _navigatorKey,
           onGenerateRoute: (_) => MaterialPageRoute(
             builder: (_) => ListView(
-              key: const PageStorageKey("AlbumsListView"),
               controller: ScrollController(),
               itemExtent: 64,
               children: mediaLibraryService.allAlbums.map((album) {

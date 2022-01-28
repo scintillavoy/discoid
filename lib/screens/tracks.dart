@@ -8,11 +8,21 @@ import 'package:discoid/widgets/import_button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Tracks extends StatelessWidget {
+class Tracks extends StatefulWidget {
   const Tracks({Key? key}) : super(key: key);
 
   @override
+  _TracksState createState() => _TracksState();
+}
+
+class _TracksState extends State<Tracks>
+    with AutomaticKeepAliveClientMixin<Tracks> {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Consumer<MediaLibraryService>(
       builder: (_, mediaLibraryService, __) {
         SplayTreeSet<Track> allTracks = mediaLibraryService.allTracks;
@@ -22,7 +32,6 @@ class Tracks extends StatelessWidget {
           children: [
             Expanded(
               child: ListView.builder(
-                key: const PageStorageKey("TracksListView"),
                 controller: ScrollController(),
                 itemCount: allTracks.length,
                 itemExtent: 64,

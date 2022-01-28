@@ -41,10 +41,10 @@ class Home extends StatelessWidget {
                         color: Theme.of(context).colorScheme.primary,
                         thickness: 1,
                       ),
-                      Expanded(
+                      const Expanded(
                         child: TabBarView(children: [
-                          const AutoplayScreen(),
-                          const Tracks(),
+                          AutoplayScreen(),
+                          Tracks(),
                           Albums(),
                           Playlists(),
                         ]),
