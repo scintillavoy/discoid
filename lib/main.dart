@@ -32,9 +32,12 @@ class MyApp extends StatelessWidget {
               : MediaLibraryService(),
         ),
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: Home(),
+        home: const Home(),
+        theme: ThemeData.light(),
+        darkTheme: ThemeData.dark(),
+        themeMode: ThemeMode.system,
       ),
     );
   }
