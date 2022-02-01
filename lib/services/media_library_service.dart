@@ -7,6 +7,7 @@ import 'dart:typed_data';
 import 'package:discoid/models/album.dart';
 import 'package:discoid/models/track.dart';
 import 'package:discoid/services/audio_player_service.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flac_metadata/flacstream.dart';
 import 'package:flac_metadata/metadata.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,8 @@ import 'package:sembast/sembast_io.dart';
 import 'package:sembast/timestamp.dart';
 
 class MediaLibraryService extends ChangeNotifier {
+  static const Set<String> allowedExtensions = {"mp3", "flac"};
+
   late Future<Database> database;
   var fileStore = stringMapStoreFactory.store('file');
   var trackStore = intMapStoreFactory.store('track');
@@ -146,6 +149,30 @@ class MediaLibraryService extends ChangeNotifier {
         increasePlayCount(audioPlayerService.currentTrack!);
       }
     });
+  }
+
+  Future<void> import(final bool isDirectoryImport) async {
+    if (isDirectoryImport) {
+      String? directoryPath = await FilePicker.platform.getDirectoryPath();
+      if (directoryPath == null) return;
+      Directory directory = Directory(directoryPath);
+      directory.list(recursive: true, followLinks: false).forEach((file) {
+        String path = Uri.decodeFull(file.uri.path.toString());
+        if (FileSystemEntity.isDirectorySync(path)) return;
+        if (!allowedExtensions.contains(path.split(".").last)) return;
+        addTrackByUri("file://$path");
+      });
+    } else {
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(allowMultiple: true);
+      if (result == null) return;
+      for (var file in result.files) {
+        if (!allowedExtensions.contains(file.path?.split(".").last)) {
+          continue;
+        }
+        addTrackByUri("file://${file.path}");
+      }
+    }
   }
 
   Future<void> addTrackByUri(final String uri) async {
