@@ -43,6 +43,7 @@ dependencies:
   id3tag:
     git:
       url: git://github.com/scintillavoy/id3tag.git
+      ref: development
   flac_metadata:
     git:
       url: git://github.com/scintillavoy/flac_metadata.git

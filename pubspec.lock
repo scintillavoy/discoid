@@ -104,10 +104,10 @@ packages:
     description:
       path: "."
       ref: development
-      resolved-ref: "4ce7fcb3d4aed27a14971a68ea2b7d25d38260d9"
+      resolved-ref: d48ac67cad06a3c211111fdb8907a52c40819ee9
       url: "git://github.com/scintillavoy/flac_metadata.git"
     source: git
-    version: "1.0.3"
+    version: "1.0.4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -148,7 +148,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: HEAD
+      ref: development
       resolved-ref: "885aaadd1304422f849977a633a5be48d6ab26e4"
       url: "git://github.com/scintillavoy/id3tag.git"
     source: git
