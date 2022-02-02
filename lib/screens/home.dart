@@ -1,4 +1,5 @@
 import 'package:discoid/screens/albums.dart';
+import 'package:discoid/screens/artists.dart';
 import 'package:discoid/screens/autoplay_screen.dart';
 import 'package:discoid/screens/tracks.dart';
 import 'package:discoid/screens/playlists.dart';
@@ -20,7 +21,7 @@ class Home extends StatelessWidget {
             child: Column(
               children: [
                 DefaultTabController(
-                  length: constraints.maxWidth < mobileWidth ? 5 : 4,
+                  length: constraints.maxWidth < mobileWidth ? 6 : 5,
                   child: Expanded(
                     child: Scaffold(
                       appBar: AppBar(
@@ -31,6 +32,7 @@ class Home extends StatelessWidget {
                             const Tab(text: "Autoplay"),
                             const Tab(text: "Tracks"),
                             const Tab(text: "Albums"),
+                            const Tab(text: "Artists"),
                             const Tab(text: "Playlists"),
                             if (constraints.maxWidth < mobileWidth)
                               const Tab(text: "Lyrics"),
@@ -55,6 +57,7 @@ class Home extends StatelessWidget {
                                 const AutoplayScreen(),
                                 const Tracks(),
                                 const Albums(),
+                                const Artists(),
                                 const Playlists(),
                                 if (constraints.maxWidth < mobileWidth)
                                   Row(

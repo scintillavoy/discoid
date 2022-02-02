@@ -5,6 +5,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:discoid/models/album.dart';
+import 'package:discoid/models/artist.dart';
 import 'package:discoid/models/track.dart';
 import 'package:discoid/services/audio_player_service.dart';
 import 'package:file_picker/file_picker.dart';
@@ -69,9 +70,13 @@ class MediaLibraryService extends ChangeNotifier {
     result =
         (a.name ?? "").toLowerCase().compareTo((b.name ?? "").toLowerCase());
     if (result != 0) return result;
-    return (a.albumArtist ?? "")
+    return (a.albumArtist.name ?? "")
         .toLowerCase()
-        .compareTo((b.albumArtist ?? "").toLowerCase());
+        .compareTo((b.albumArtist.name ?? "").toLowerCase());
+  });
+  SplayTreeSet<Artist> allArtists =
+      SplayTreeSet<Artist>((final Artist a, final Artist b) {
+    return (a.name ?? "").toLowerCase().compareTo((b.name ?? "").toLowerCase());
   });
 
   MediaLibraryService() {
@@ -115,11 +120,13 @@ class MediaLibraryService extends ChangeNotifier {
         await syncStores(track);
         addTrackToAllTracks(track);
         addTrackToAllAlbums(track);
+        addAlbumToAllArtists(track.album);
       }
       notifyListeners();
       print("Initialization completed.\n"
           "${allTracks.length} tracks loaded.\n"
-          "${allAlbums.length} albums loaded.");
+          "${allAlbums.length} albums loaded.\n"
+          "${allArtists.length} artists loaded.");
     }();
   }
 
@@ -216,6 +223,7 @@ class MediaLibraryService extends ChangeNotifier {
     await syncStores(track);
     addTrackToAllTracks(track);
     addTrackToAllAlbums(track);
+    addAlbumToAllArtists(track.album);
     notifyListeners();
   }
 
@@ -239,7 +247,8 @@ class MediaLibraryService extends ChangeNotifier {
       track.title = flacTag['Title'] ?? track.title;
       track.artist = flacTag['Artist'];
       track.album.name = flacTag['Album'];
-      track.album.albumArtist = flacTag['ALBUMARTIST'];
+      track.album.albumArtist.name =
+          flacTag['ALBUMARTIST'] ?? flacTag['Artist'];
       if (flacTag['TRACKNUMBER'] != null) {
         track.trackNumber = int.tryParse(flacTag['TRACKNUMBER']!);
       }
@@ -254,8 +263,9 @@ class MediaLibraryService extends ChangeNotifier {
       track.title = tag.title ?? track.title;
       track.artist = tag.artist;
       track.album.name = tag.album;
-      track.album.albumArtist =
-          tag.frameWithTypeAndName<id3tag.TextInformation>("TPE2")?.value;
+      track.album.albumArtist.name =
+          tag.frameWithTypeAndName<id3tag.TextInformation>("TPE2")?.value ??
+              tag.artist;
       if (tag.track != null) {
         track.trackNumber = int.tryParse(tag.track!.split('/').first);
       }
@@ -304,6 +314,15 @@ class MediaLibraryService extends ChangeNotifier {
           return track.album;
         }();
     track.album.tracks.add(track);
+  }
+
+  void addAlbumToAllArtists(Album album) {
+    album.albumArtist = allArtists.lookup(album.albumArtist) ??
+        () {
+          allArtists.add(album.albumArtist);
+          return album.albumArtist;
+        }();
+    album.albumArtist.albums.add(album);
   }
 
   Future<void> increasePlayCount(final Track track) async {

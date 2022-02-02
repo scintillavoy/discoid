@@ -1,14 +1,16 @@
 import 'dart:collection';
 
+import 'package:discoid/models/artist.dart';
 import 'package:discoid/models/track.dart';
 
 class Album {
   String? name;
-  String? albumArtist;
+  Artist albumArtist;
   SplayTreeSet<Track> tracks;
 
-  Album({this.name, this.albumArtist})
-      : tracks = SplayTreeSet<Track>((final Track a, final Track b) {
+  Album({this.name, Artist? albumArtist})
+      : albumArtist = albumArtist ?? Artist(),
+        tracks = SplayTreeSet<Track>((final Track a, final Track b) {
           int result;
           result = (a.discNumber ?? 0).compareTo(b.discNumber ?? 0);
           if (result != 0) return result;

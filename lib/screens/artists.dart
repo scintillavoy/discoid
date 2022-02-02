@@ -1,18 +1,17 @@
-import 'package:discoid/models/playlist.dart';
-import 'package:discoid/screens/playlist_screen.dart';
+import 'package:discoid/screens/artist_screen.dart';
 import 'package:discoid/services/media_library_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class Albums extends StatefulWidget {
-  const Albums({Key? key}) : super(key: key);
+class Artists extends StatefulWidget {
+  const Artists({Key? key}) : super(key: key);
 
   @override
-  _AlbumsState createState() => _AlbumsState();
+  _ArtistsState createState() => _ArtistsState();
 }
 
-class _AlbumsState extends State<Albums>
-    with AutomaticKeepAliveClientMixin<Albums> {
+class _ArtistsState extends State<Artists>
+    with AutomaticKeepAliveClientMixin<Artists> {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
@@ -29,12 +28,13 @@ class _AlbumsState extends State<Albums>
             builder: (_) => ListView(
               controller: ScrollController(),
               itemExtent: 64,
-              children: mediaLibraryService.allAlbums.map((album) {
+              children: mediaLibraryService.allArtists.map((artist) {
                 return ListTile(
-                  leading: album.tracks.isNotEmpty &&
-                          album.tracks.first.artwork != null
+                  leading: artist.albums.isNotEmpty &&
+                          artist.albums.first.tracks.isNotEmpty &&
+                          artist.albums.first.tracks.first.artwork != null
                       ? Image.memory(
-                          album.tracks.first.artwork!,
+                          artist.albums.first.tracks.first.artwork!,
                           width: 48,
                         )
                       : Icon(
@@ -42,17 +42,11 @@ class _AlbumsState extends State<Albums>
                           color: Theme.of(context).colorScheme.primary,
                           size: 48,
                         ),
-                  title: Text(album.name ?? "Unknown Album"),
-                  subtitle: Text(
-                      "${album.albumArtist.name ?? "Unknown Artist"} - ${album.tracks.length}"),
+                  title: Text(artist.name ?? "Unknown Artist"),
+                  subtitle: Text("${artist.albums.length}"),
                   onTap: () {
                     _navigatorKey.currentState?.push(MaterialPageRoute(
-                      builder: (_) => PlaylistScreen(
-                        Playlist(
-                          name: album.name ?? "Unknown Album",
-                          items: album.tracks,
-                        ),
-                      ),
+                      builder: (_) => ArtistScreen(artist),
                     ));
                   },
                 );
