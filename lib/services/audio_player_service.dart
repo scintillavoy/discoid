@@ -8,7 +8,7 @@ import 'package:rxdart/rxdart.dart';
 
 class AudioPlayerService {
   final AudioPlayer audioPlayer = AudioPlayer();
-  late StreamSubscription<ProcessingState> processingStateStream;
+  late StreamSubscription<ProcessingState> processingStateStreamSubscription;
   Playlist? currentPlaylist;
   int? currentIndex;
   List<int>? _shuffledIndices;
@@ -17,7 +17,7 @@ class AudioPlayerService {
 
   AudioPlayerService() {
     audioPlayer.setVolume(0.35);
-    processingStateStream =
+    processingStateStreamSubscription =
         audioPlayer.processingStateStream.listen((state) async {
       if (state == ProcessingState.completed) {
         if (hasNext) {
@@ -34,7 +34,7 @@ class AudioPlayerService {
   }
 
   void dispose() {
-    processingStateStream.cancel();
+    processingStateStreamSubscription.cancel();
     audioPlayer.dispose();
   }
 
