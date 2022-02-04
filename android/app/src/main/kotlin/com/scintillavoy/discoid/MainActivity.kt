@@ -1,4 +1,4 @@
-package com.example.discoid
+package com.scintillavoy.discoid
 
 import io.flutter.embedding.android.FlutterActivity
 
