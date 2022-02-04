@@ -14,17 +14,14 @@ class LyricsPanel extends StatelessWidget {
         stream: audioPlayerService.audioPlayer.sequenceStateStream,
         builder: (_, snapshot) {
           return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
             controller: ScrollController(),
-            child: Container(
-              margin: const EdgeInsets.fromLTRB(10, 15, 10, 30),
-              child: Text(
-                ((snapshot.data as SequenceState?)?.currentSource?.tag
-                            as Track?)
-                        ?.lyrics ??
-                    "Lyrics Not Available",
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 16),
-              ),
+            child: Text(
+              ((snapshot.data as SequenceState?)?.currentSource?.tag as Track?)
+                      ?.lyrics ??
+                  "Lyrics Not Available",
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 17),
             ),
           );
         },
