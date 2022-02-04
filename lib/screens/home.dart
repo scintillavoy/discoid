@@ -18,6 +18,7 @@ class Home extends StatelessWidget {
       builder: (context, constraints) {
         return Scaffold(
           body: SafeArea(
+            top: false,
             child: Column(
               children: [
                 DefaultTabController(
@@ -26,6 +27,7 @@ class Home extends StatelessWidget {
                     child: Scaffold(
                       appBar: AppBar(
                         title: const Text('d_d'),
+                        centerTitle: true,
                         bottom: TabBar(
                           isScrollable: true,
                           tabs: [
