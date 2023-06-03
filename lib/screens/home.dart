@@ -55,6 +55,7 @@ class Home extends StatelessWidget {
                           ],
                           Expanded(
                             child: TabBarView(
+                              physics: const NeverScrollableScrollPhysics(),
                               children: [
                                 const AutoplayScreen(),
                                 const Tracks(),
@@ -62,8 +63,8 @@ class Home extends StatelessWidget {
                                 const Artists(),
                                 const Playlists(),
                                 if (constraints.maxWidth < mobileWidth)
-                                  Row(
-                                    children: const [
+                                  const Row(
+                                    children: [
                                       Expanded(
                                         child: LyricsPanel(),
                                       ),

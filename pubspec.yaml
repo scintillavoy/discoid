@@ -42,11 +42,11 @@ dependencies:
   sembast: ^3.1.1+1
   id3tag:
     git:
-      url: git://github.com/scintillavoy/id3tag.git
+      url: https://github.com/scintillavoy/id3tag.git
       ref: development
   flac_metadata:
     git:
-      url: git://github.com/scintillavoy/flac_metadata.git
+      url: https://github.com/scintillavoy/flac_metadata.git
       ref: development
   path_provider: ^2.0.8
   path: ^1.8.0

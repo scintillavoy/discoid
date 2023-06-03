@@ -236,7 +236,7 @@ class MediaLibraryService extends ChangeNotifier {
       for (Metadata metadata in metadatas) {
         if (metadata is VorbisComment) {
           for (String element in metadata.comments) {
-            flacTag[element.substring(0, element.indexOf('='))] =
+            flacTag[element.substring(0, element.indexOf('=')).toUpperCase()] =
                 element.substring(element.indexOf('=') + 1);
           }
         } else if (metadata is Picture) {
@@ -244,18 +244,18 @@ class MediaLibraryService extends ChangeNotifier {
         }
       }
 
-      track.title = flacTag['Title'] ?? track.title;
-      track.artist = flacTag['Artist'];
-      track.album.name = flacTag['Album'];
+      track.title = flacTag['TITLE'] ?? track.title;
+      track.artist = flacTag['ARTIST'];
+      track.album.name = flacTag['ALBUM'];
       track.album.albumArtist.name =
-          flacTag['ALBUMARTIST'] ?? flacTag['Artist'];
+          flacTag['ALBUMARTIST'] ?? flacTag['ARTIST'];
       if (flacTag['TRACKNUMBER'] != null) {
         track.trackNumber = int.tryParse(flacTag['TRACKNUMBER']!);
       }
       if (flacTag['DISCNUMBER'] != null) {
         track.discNumber = int.tryParse(flacTag['DISCNUMBER']!);
       }
-      track.lyrics = flacTag['Lyrics'];
+      track.lyrics = flacTag['LYRICS'];
     } else {
       id3tag.ID3Tag tag =
           id3tag.ID3TagReader.path(uri.split("://").last).readTagSync();
